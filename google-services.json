@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348452483262",
+    "project_id": "albarq-42670",
+    "storage_bucket": "albarq-42670.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348452483262:android:d40b8cb0262fca4966aeef",
+        "android_client_info": {
+          "package_name": "Albarq.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7rPR--Ue2yePPeuc1fNLTIAmX7TXyQUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
