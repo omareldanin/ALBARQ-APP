@@ -1,14 +1,15 @@
 // app/login.tsx
 import { APIError } from "@/api";
+import FloatingLabelInput from "@/components/FloatingLabelInput/FloatingLabelInput";
 import { queryClient } from "@/lib/queryClient";
 import { SignInRequest, signInService } from "@/services/signInService";
 import { useAuth } from "@/store/authStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/loginStyles";
-import { MaterialIcons } from "@expo/vector-icons"; // or Ionicons, FontAwesome, etc.
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   ImageBackground,
   Keyboard,
@@ -17,7 +18,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -30,10 +30,9 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneIsFocused, setPhoneIsFocused] = useState(false);
-  const [passwordIsFocused, setPasswordIsFocused] = useState(false);
-  const passwordRef = useRef<TextInput>(null);
   const router = useRouter();
+  const { theme } = useThemeStore();
+
   const { mutate: login, isPending } = useMutation({
     mutationFn: ({ password, username }: SignInRequest) => {
       return signInService({ password, username });
@@ -49,7 +48,7 @@ export default function Login() {
       queryClient.invalidateQueries({
         queryKey: ["validateToken"],
       });
-      router.navigate("/(tabs)");
+      router.replace("/(tabs)");
       setAuth(data);
     },
     onError: (error: AxiosError<APIError>) => {
@@ -94,11 +93,17 @@ export default function Login() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={"padding"}
-        style={{ flex: 1, backgroundColor: "#fff" }}
+        style={{
+          flex: 1,
+          backgroundColor: theme === "dark" ? "#31404e" : "#fff",
+        }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // adjust if needed
       >
         <ScrollView
-          style={styles.container}
+          style={[
+            styles.container,
+            { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+          ]}
           contentContainerStyle={{
             flexGrow: 1,
             paddingBottom: 30,
@@ -112,46 +117,33 @@ export default function Login() {
               style={styles.image}
             ></ImageBackground>
           </View>
-          <View style={styles.form}>
-            <Text style={styles.text}>إبدأ في اداره طلباتك !</Text>
+          <View
+            style={[
+              styles.form,
+              { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+            ]}
+          >
+            <Text
+              style={[
+                styles.text,
+                { color: theme === "dark" ? "#f7f7f7" : "#000" },
+              ]}
+            >
+              إبدأ في اداره طلباتك !
+            </Text>
             <View style={styles.inputContainer}>
-              <MaterialIcons
-                name="phone"
-                size={20}
-                color={phoneIsFocused ? "#A91101" : "#DADADA"}
-                style={styles.icon}
-              />
-              <TextInput
-                placeholder="رقم الهاتف"
-                onFocus={() => setPhoneIsFocused(true)}
-                onBlur={() => setPhoneIsFocused(false)}
-                onChangeText={setUsername}
-                style={[styles.input, phoneIsFocused && styles.inputFocused]}
+              <FloatingLabelInput
+                label="رقم الهاتف"
                 value={username}
-                returnKeyType="next"
-                onSubmitEditing={() => passwordRef.current?.focus()}
-                placeholderTextColor={"grey"}
-                importantForAutofill="no"
+                onChangeText={setUsername}
               />
             </View>
             <View style={styles.inputContainer}>
-              <MaterialIcons
-                name="lock"
-                size={20}
-                color={passwordIsFocused ? "#A91101" : "#DADADA"}
-                style={styles.icon}
-              />
-              <TextInput
-                placeholder="كلمه المرور"
-                secureTextEntry
-                onChangeText={setPassword}
-                onFocus={() => setPasswordIsFocused(true)}
-                onBlur={() => setPasswordIsFocused(false)}
+              <FloatingLabelInput
+                label="كلمة المرور"
                 value={password}
-                style={[styles.input, passwordIsFocused && styles.inputFocused]}
-                ref={passwordRef}
-                placeholderTextColor={"grey"}
-                importantForAutofill="no"
+                onChangeText={setPassword}
+                secureTextEntry={true}
               />
             </View>
             <Pressable

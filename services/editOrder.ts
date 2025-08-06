@@ -23,6 +23,8 @@ export interface EditOrderPayload {
   clientOrderReceiptId?: string;
   confirmed?: boolean;
   status?: keyof typeof orderStatusArabicNames;
+  processingStatus?: string;
+  paidAmount?: number;
 }
 
 export const editOrderService = async ({

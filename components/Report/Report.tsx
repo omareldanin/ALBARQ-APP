@@ -3,6 +3,7 @@ import { getReportPDFService } from "@/services/getReportPDF";
 import { Report } from "@/services/getReports";
 
 import { editReportService } from "@/services/editReportService";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/reports";
 import { AntDesign, FontAwesome5, FontAwesome6 } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ export const ReportItem = ({ report }: Props) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [confirmed, setConfirmed] = useState(report.confirmed);
   const date = new Date(report.createdAt);
-
+  const { theme } = useThemeStore();
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
@@ -76,7 +77,16 @@ export const ReportItem = ({ report }: Props) => {
   };
 
   return (
-    <View style={[styles.order, expanded ? styles.expanded : styles.collapsed]}>
+    <View
+      style={[
+        styles.order,
+        expanded ? styles.expanded : styles.collapsed,
+        {
+          backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+          borderColor: theme === "dark" ? "#15202b" : "#f7f7f7",
+        },
+      ]}
+    >
       <Pressable style={styles.head} onPress={toggleExpand}>
         <View
           style={{ flexDirection: "row", alignItems: "flex-start", gap: 15 }}
@@ -87,7 +97,14 @@ export const ReportItem = ({ report }: Props) => {
             color={report.secondaryType === "DELIVERED" ? "green" : "#a91101"}
           />
           <View>
-            <Text style={{ fontFamily: "CairoBold" }}>{report.id}</Text>
+            <Text
+              style={{
+                fontFamily: "CairoBold",
+                color: theme === "dark" ? "#fff" : "#000",
+              }}
+            >
+              {report.id}
+            </Text>
             <Text
               style={{
                 fontSize: 11,
@@ -124,7 +141,11 @@ export const ReportItem = ({ report }: Props) => {
             {isloadingPrint ? (
               <ActivityIndicator size="small" color={"#a91101"} />
             ) : (
-              <AntDesign name="download" size={19} color="black" />
+              <AntDesign
+                name="download"
+                size={19}
+                color={theme === "dark" ? "#fff" : "#000"}
+              />
             )}
           </Pressable>
           <Pressable
@@ -152,6 +173,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               التاريخ :
@@ -163,6 +185,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {date.toLocaleString()}
@@ -177,6 +200,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontFamily: "Cairo",
                   fontSize: 14,
                   marginRight: 10,
+                  color: theme === "dark" ? "#ccc" : "#000",
                 }}
               >
                 العميل :
@@ -188,6 +212,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontFamily: "CairoBold",
                   fontSize: 13,
                   marginRight: 10,
+                  color: theme === "dark" ? "#fff" : "#000",
                 }}
               >
                 {report.clientReport?.client.name}
@@ -203,6 +228,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontFamily: "Cairo",
                   fontSize: 14,
                   marginRight: 10,
+                  color: theme === "dark" ? "#ccc" : "#000",
                 }}
               >
                 العميل :
@@ -214,6 +240,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontFamily: "CairoBold",
                   fontSize: 13,
                   marginRight: 10,
+                  color: theme === "dark" ? "#fff" : "#000",
                 }}
               >
                 {report.deliveryAgentReport?.deliveryAgent.name}
@@ -228,6 +255,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               عدد الطلبات :
@@ -239,6 +267,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {report.baghdadOrdersCount + report.governoratesOrdersCount}
@@ -252,6 +281,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               عدد طلبات بغداد :
@@ -263,6 +293,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {report.baghdadOrdersCount}
@@ -276,6 +307,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               عدد طلبات المحافظات :
@@ -287,6 +319,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {report.governoratesOrdersCount}
@@ -300,6 +333,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               حاله الكشف :
@@ -325,6 +359,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 14,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               استلام الكشف :

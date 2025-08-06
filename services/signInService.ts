@@ -1,6 +1,5 @@
 import { api } from "@/api";
 import { authStore } from "@/store/authStore";
-import Toast from "react-native-toast-message";
 
 export interface SignInRequest {
   username: string;
@@ -25,12 +24,12 @@ export const validateToken = async () => {
     return response;
   } catch (e) {
     authStore.getState().logout();
-    Toast.show({
-      type: "error",
-      text1: "حدث خطأ ❌",
-      text2: "لقد انتهت صلاحية الجلسة الرجاء تسجيل الدخول مرة أخرى",
-      position: "top",
-    });
+    // Toast.show({
+    //   type: "error",
+    //   text1: "حدث خطأ ❌",
+    //   text2: "لقد انتهت صلاحية الجلسة الرجاء تسجيل الدخول مرة أخرى",
+    //   position: "top",
+    // });
     throw e;
   }
 };

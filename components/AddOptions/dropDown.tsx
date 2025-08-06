@@ -1,6 +1,9 @@
+import { useThemeStore } from "@/store/themeStore";
+import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   FlatList,
+  I18nManager,
   Modal,
   Pressable,
   StyleSheet,
@@ -14,6 +17,7 @@ interface Props {
   label: string;
   setValue: (value: string) => void;
   value?: string | null;
+  required?: boolean;
 }
 
 export default function NativeSearchableSelect({
@@ -21,10 +25,11 @@ export default function NativeSearchableSelect({
   label,
   setValue,
   value,
+  required,
 }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState("");
-
+  const { theme } = useThemeStore();
   const filteredOptions = options.filter((item) =>
     item.label.toLowerCase().includes(search.toLowerCase())
   );
@@ -37,40 +42,85 @@ export default function NativeSearchableSelect({
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.selectBox} onPress={() => setModalVisible(true)}>
-        <Text style={styles.selectText}>{value || label}</Text>
-      </Pressable>
-      {/* <Pressable
-        style={{
-          position: "absolute",
-          [!I18nManager.isRTL ? "left" : "right"]: 0,
-          top: 12,
-          zIndex: 1000,
-          width: 40,
-        }}
-        onPress={reset}
+      <Pressable
+        style={[
+          styles.selectBox,
+          {
+            backgroundColor: theme === "dark" ? "#31404e" : "#fff",
+            borderColor: theme === "dark" ? "grey" : "#f7f7f7",
+          },
+        ]}
+        onPress={() => setModalVisible(true)}
       >
-        <Feather name="x" size={24} color="grey" />
-      </Pressable> */}
+        <Text
+          style={[
+            styles.selectText,
+            {
+              color:
+                theme === "dark" && value
+                  ? "#fff"
+                  : theme === "light" && value
+                    ? "#000"
+                    : "#999",
+            },
+          ]}
+        >
+          {value || label}
+        </Text>
+      </Pressable>
+      {value ? (
+        <Pressable
+          style={{
+            position: "absolute",
+            [!I18nManager.isRTL ? "left" : "right"]: 0,
+            top: 12,
+            zIndex: 1000,
+            width: 40,
+          }}
+          onPress={() => setValue("")}
+        >
+          <Feather name="x" size={24} color="grey" />
+        </Pressable>
+      ) : null}
 
       <Modal animationType="slide" visible={modalVisible} transparent>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View
+            style={[
+              styles.modalContent,
+              { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+            ]}
+          >
             <TextInput
               placeholder="ابحث..."
               value={search}
               onChangeText={setSearch}
-              style={styles.searchInput}
+              style={[
+                styles.searchInput,
+                {
+                  backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                  borderColor: theme === "dark" ? "#31404e" : "#fff",
+                  color: theme === "dark" ? "#fff" : "#000",
+                },
+              ]}
+              placeholderTextColor={theme === "dark" ? "#ccc" : "grey"}
             />
             <FlatList
               data={filteredOptions}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <Pressable
-                  style={styles.optionItem}
+                  style={[
+                    styles.optionItem,
+                    {
+                      borderBottomColor: theme === "dark" ? "#15202b" : "#eee",
+                    },
+                  ]}
                   onPress={() => handleSelect(item.value, item.label)}
                 >
-                  <Text>{item.label}</Text>
+                  <Text style={{ color: theme === "dark" ? "#ccc" : "grey" }}>
+                    {item.label}
+                  </Text>
                 </Pressable>
               )}
               ListEmptyComponent={<Text>لا يوجد</Text>}
@@ -95,12 +145,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#fff",
     borderColor: "#f7f7f7",
-    color: "grey",
     borderWidth: 1,
   },
   selectText: {
-    color: "grey",
+    color: "#999",
     fontFamily: "Cairo",
+    fontSize: 15,
+    textAlign: "left",
   },
   modalOverlay: {
     flex: 1,

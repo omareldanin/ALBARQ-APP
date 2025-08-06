@@ -1,17 +1,14 @@
-import { APIError } from "@/api";
 import { governorateArabicNames } from "@/lib/governorateArabicNames ";
 import {
   orderStatusArabicNames,
   orderStatusColors,
 } from "@/lib/orderStatusArabicNames";
-import { queryClient } from "@/lib/queryClient";
-import { editOrderService } from "@/services/editOrder";
 import { Order } from "@/services/getOrders";
 import { orderSecondaryStatusArabicNames } from "@/services/orderSecondaryStatusArabicNames";
 import { useAuth } from "@/store/authStore";
-import { useStatisticsStore } from "@/store/statisticsStore";
 
 import { useDeactivateOrder } from "@/hooks/useDeactivateOrder";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/ordersStyles";
 import {
   AntDesign,
@@ -23,8 +20,6 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -56,12 +51,12 @@ export const OrderItem = ({
   const [expanded, setExpanded] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const { theme } = useThemeStore();
 
   const router = useRouter();
   const { name, role } = useAuth();
 
   const date = new Date(order.createdAt);
-  const { refreshStatistics } = useStatisticsStore();
 
   const formatNumber = (value: string | number) => {
     return new Intl.NumberFormat("en-US").format(Number(value));
@@ -102,35 +97,6 @@ export const OrderItem = ({
     return `https://wa.me/${iraqNumber}?text=${encodeURIComponent(text)}`;
   };
 
-  const { mutate: sendOrders, isPending: isloadingSend } = useMutation({
-    mutationFn: () => {
-      return editOrderService({
-        id: order.receiptNumber,
-        data: {
-          confirmed: true,
-          status: "WITH_RECEIVING_AGENT",
-        },
-      });
-    },
-    onSuccess: () => {
-      Toast.show({
-        type: "success",
-        text1: "تم بنجاح ✅",
-        text2: "تم الاستلام بنجاح 🎉",
-        position: "top",
-      });
-      refreshStatistics();
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-    onError: (error: AxiosError<APIError>) => {
-      Toast.show({
-        type: "error",
-        text1: "حدث خطأ ❌",
-        text2: error.response?.data.message || "الرجاء التأكد من البيانات",
-        position: "top",
-      });
-    },
-  });
   const { mutate: deleteOrder, isPending } = useDeactivateOrder();
 
   const handleDelete = () => {
@@ -148,7 +114,16 @@ export const OrderItem = ({
   };
 
   return (
-    <View style={[styles.order, expanded ? styles.expanded : styles.collapsed]}>
+    <View
+      style={[
+        styles.order,
+        expanded ? styles.expanded : styles.collapsed,
+        {
+          backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+          borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
+        },
+      ]}
+    >
       <Pressable style={styles.head} onPress={toggleExpand}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {showCheckBox ? (
@@ -189,6 +164,7 @@ export const OrderItem = ({
             style={{
               fontFamily: "Cairo",
               fontSize: 13,
+              color: theme === "dark" ? "#fff" : "#000",
             }}
           >
             {order.receiptNumber}
@@ -211,13 +187,20 @@ export const OrderItem = ({
         </View>
       </Pressable>
       <View style={styles.info}>
-        <View style={[styles.infoItem, styles.infoItemBorder]}>
+        <View
+          style={[
+            styles.infoItem,
+            styles.infoItemBorder,
+            { borderColor: theme === "dark" ? "#31404e" : "#f7f7f7" },
+          ]}
+        >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Fontisto name="date" size={20} color="#A91101" />
             <Text
               style={{
                 fontFamily: "Cairo",
                 fontSize: 13,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               التاريخ :
@@ -228,19 +211,27 @@ export const OrderItem = ({
               style={{
                 fontFamily: "CairoBold",
                 fontSize: 11,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {date.toLocaleString()}
             </Text>
           </View>
         </View>
-        <View style={[styles.infoItem, styles.infoItemBorder]}>
+        <View
+          style={[
+            styles.infoItem,
+            styles.infoItemBorder,
+            { borderColor: theme === "dark" ? "#31404e" : "#f7f7f7" },
+          ]}
+        >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Entypo name="location-pin" size={24} color="#A91101" />
             <Text
               style={{
                 fontFamily: "Cairo",
                 fontSize: 13,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               العنوان :
@@ -252,22 +243,34 @@ export const OrderItem = ({
                 fontFamily: "CairoBold",
                 fontSize: 11,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {governorateArabicNames[order.governorate] +
                 " - " +
                 order.location?.name}
-              {order.recipientAddress ? " - " + order.recipientAddress : null}
+              {order.recipientAddress && order.recipientAddress.length > 20
+                ? " - " + order.recipientAddress.slice(1, 20) + "..."
+                : order.recipientAddress
+                  ? " - " + order.recipientAddress
+                  : null}
             </Text>
           </View>
         </View>
-        <View style={[styles.infoItem, styles.infoItemBorder]}>
+        <View
+          style={[
+            styles.infoItem,
+            styles.infoItemBorder,
+            { borderColor: theme === "dark" ? "#31404e" : "#f7f7f7" },
+          ]}
+        >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <FontAwesome5 name="money-bill-wave" size={18} color="#A91101" />
             <Text
               style={{
                 fontFamily: "Cairo",
                 fontSize: 13,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               السعر الكلي :
@@ -278,6 +281,7 @@ export const OrderItem = ({
               style={{
                 fontFamily: "CairoBold",
                 fontSize: 13,
+                color: theme === "dark" ? "#fff" : "#000",
                 marginRight: 10,
               }}
             >
@@ -292,6 +296,7 @@ export const OrderItem = ({
               style={{
                 fontFamily: "Cairo",
                 fontSize: 13,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               {order.recipientName ? order.recipientName : "لا يوجد"}
@@ -301,7 +306,11 @@ export const OrderItem = ({
             <Pressable
               onPress={() => Linking.openURL(`tel:${order.recipientPhones[0]}`)}
             >
-              <Feather name="phone" size={20} color="grey" />
+              <Feather
+                name="phone"
+                size={20}
+                color={theme === "dark" ? "#fff" : "grey"}
+              />
             </Pressable>
             <Pressable
               onPress={() => {
@@ -310,12 +319,20 @@ export const OrderItem = ({
 بخصوص الطلب رقم ${order.receiptNumber}
 هل انت جاهز للأستلام ؟
 ارسل موقعك `;
-                Linking.openURL(
-                  formatToWhatsAppLink(order.recipientPhones[0], message) || ""
+                const link = formatToWhatsAppLink(
+                  order?.recipientPhones[0] || "",
+                  message
                 );
+                if (link) {
+                  Linking.openURL(link);
+                }
               }}
             >
-              <FontAwesome name="whatsapp" size={22} color="grey" />
+              <FontAwesome
+                name="whatsapp"
+                size={22}
+                color={theme === "dark" ? "#fff" : "grey"}
+              />
             </Pressable>
           </View>
         </View>
@@ -329,6 +346,7 @@ export const OrderItem = ({
                 style={{
                   fontFamily: "Cairo",
                   fontSize: 13,
+                  color: theme === "dark" ? "#ccc" : "#000",
                 }}
               >
                 {order.client.name}
@@ -340,7 +358,11 @@ export const OrderItem = ({
               <Pressable
                 onPress={() => Linking.openURL(`tel:${order.client.phone}`)}
               >
-                <Feather name="phone" size={20} color="grey" />
+                <Feather
+                  name="phone"
+                  size={20}
+                  color={theme === "dark" ? "#fff" : "grey"}
+                />
               </Pressable>
               <Pressable
                 onPress={() => {
@@ -356,12 +378,16 @@ export const OrderItem = ({
                   );
                 }}
               >
-                <FontAwesome name="whatsapp" size={22} color="grey" />
+                <FontAwesome
+                  name="whatsapp"
+                  size={22}
+                  color={theme === "dark" ? "#fff" : "grey"}
+                />
               </Pressable>
             </View>
           </View>
         )}
-        {role === "CLIENT" &&
+        {(role === "CLIENT" || role === "CLIENT_ASSISTANT") &&
         !order.client.showDeliveryNumber ? null : order.deliveryAgent ? (
           <View style={styles.infoItem}>
             <View
@@ -376,6 +402,7 @@ export const OrderItem = ({
                 style={{
                   fontFamily: "Cairo",
                   fontSize: 13,
+                  color: theme === "dark" ? "#ccc" : "#000",
                 }}
               >
                 {order.deliveryAgent?.name}
@@ -389,7 +416,11 @@ export const OrderItem = ({
                   Linking.openURL(`tel:${order.deliveryAgent?.phone}`)
                 }
               >
-                <Feather name="phone" size={20} color="grey" />
+                <Feather
+                  name="phone"
+                  size={20}
+                  color={theme === "dark" ? "#fff" : "grey"}
+                />
               </Pressable>
               <Pressable
                 onPress={() => {
@@ -408,7 +439,11 @@ export const OrderItem = ({
                   );
                 }}
               >
-                <FontAwesome name="whatsapp" size={22} color="grey" />
+                <FontAwesome
+                  name="whatsapp"
+                  size={22}
+                  color={theme === "dark" ? "#fff" : "grey"}
+                />
               </Pressable>
             </View>
           </View>
@@ -419,7 +454,10 @@ export const OrderItem = ({
           <Text style={[styles.buttonText, { color: "#000" }]}>نسخ</Text>
         </Pressable>
         <Pressable
-          style={[styles.button, { backgroundColor: "#a91101" }]}
+          style={[
+            styles.button,
+            { backgroundColor: "#a91101", borderColor: "#a91101" },
+          ]}
           onPress={() => {
             router.push({
               pathname: "/orderDetails",
@@ -431,7 +469,7 @@ export const OrderItem = ({
         >
           <Text style={styles.buttonText}>التفاصيل</Text>
         </Pressable>
-        {role === "CLIENT" &&
+        {(role === "CLIENT" || role === "CLIENT_ASSISTANT") &&
         (order.status === "REGISTERED" || order.status === "READY_TO_SEND") ? (
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Pressable
@@ -472,11 +510,16 @@ export const OrderItem = ({
           </View>
         ) : null}
       </View>
-      {role === "RECEIVING_AGENT" && order.status === "READY_TO_SEND" ? (
+      {/* {role === "RECEIVING_AGENT" && order.status === "READY_TO_SEND" ? (
         <Pressable
           style={[
             styles.button,
-            { backgroundColor: "green", marginBottom: 10 },
+            {
+              backgroundColor: "green",
+              marginBottom: 10,
+              marginTop: 10,
+              borderColor: "green",
+            },
           ]}
           onPress={() => {
             setShowOptions(true);
@@ -489,7 +532,7 @@ export const OrderItem = ({
             <Text style={styles.buttonText}>استلام الطلب</Text>
           )}
         </Pressable>
-      ) : null}
+      ) : null} */}
       <ConfirmDialog
         visible={showOptions || showConfirmDelete}
         title={showConfirmDelete ? "حذف الطلب" : "استلام الطلب"}
@@ -503,7 +546,6 @@ export const OrderItem = ({
             handleDelete();
             setShowConfirmDelete(false);
           } else {
-            sendOrders();
             setShowOptions(false);
           }
         }}

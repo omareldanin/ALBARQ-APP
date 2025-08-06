@@ -19,11 +19,16 @@ interface NotificationsResponse {
   data: Notifications[];
 }
 
-export const getNotificationService = async (page: number, size: number) => {
+export const getNotificationService = async (
+  page: number,
+  size: number,
+  unRead: boolean
+) => {
   const response = await api.get<NotificationsResponse>("/notifications", {
     params: {
       page,
       size,
+      unRead: unRead || undefined,
     },
   });
   return response.data;
@@ -31,6 +36,12 @@ export const getNotificationService = async (page: number, size: number) => {
 
 export const updateNotificationService = async () => {
   const response = await api.patch("/notifications", {
+    seen: true,
+  });
+  return response.data;
+};
+export const updateOneNotificationService = async (id: number) => {
+  const response = await api.patch("/notifications/" + id, {
     seen: true,
   });
   return response.data;

@@ -2,6 +2,7 @@ import {
   getNotificationService,
   Notifications,
   updateNotificationService,
+  updateOneNotificationService,
 } from "@/services/notification";
 import { create } from "zustand";
 
@@ -14,9 +15,14 @@ interface NotificationStore {
   loading: boolean;
 
   // Actions
-  fetchNotifications: (page: number, size: number) => Promise<void>;
+  fetchNotifications: (
+    page: number,
+    size: number,
+    unRead: boolean
+  ) => Promise<void>;
   refreshNotifications: () => Promise<void>;
   markAllAsSeen: () => Promise<void>;
+  markOneAsSeen: (id: number) => Promise<void>;
 }
 
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
@@ -28,10 +34,10 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   loading: false,
 
   // Fetch notifications (with cache)
-  fetchNotifications: async (page: number, size: number) => {
+  fetchNotifications: async (page: number, size: number, unRead: boolean) => {
     set({ loading: true });
     try {
-      const data = await getNotificationService(page, size);
+      const data = await getNotificationService(page, size, unRead);
       set((state) => ({
         allNotifications:
           page === 1 ? data.data : [...state.allNotifications, ...data.data], // append if not first page        notifications: data.data,
@@ -54,7 +60,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       page: 1,
       pagesCount: 1,
     });
-    await get().fetchNotifications(1, 2);
+    await get().fetchNotifications(1, 25, false);
   },
 
   // Update seen status
@@ -72,6 +78,22 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       }));
     } catch (e) {
       console.error("❌ Error updating notifications", e);
+    }
+  },
+  markOneAsSeen: async (id: number) => {
+    try {
+      await updateOneNotificationService(id);
+      set((state) => ({
+        notifications: state.notifications.map((n) =>
+          n.id === id ? { ...n, seen: true } : n
+        ),
+        allNotifications: state.allNotifications.map((n) =>
+          n.id === id ? { ...n, seen: true } : n
+        ),
+        unSeenCount: Math.max(state.unSeenCount - 1, 0),
+      }));
+    } catch (e) {
+      console.error("❌ Error updating one notification", e);
     }
   },
 }));

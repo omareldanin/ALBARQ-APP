@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   order: {
     paddingTop: 15,
-    paddingBottom: 0,
+    paddingBottom: 15,
     padding: 15,
     position: "relative",
     backgroundColor: "#fff",
@@ -238,8 +238,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   orderDetails: {
-    padding: 20,
-    paddingBottom: 0,
     direction: "rtl",
   },
   h2: {
@@ -259,7 +257,6 @@ const styles = StyleSheet.create({
   },
   orderTimeLine: {
     direction: "rtl",
-    paddingTop: 10,
   },
   orderTimeLineItem: {
     marginBottom: 5,
@@ -269,14 +266,18 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo",
     color: "#a91101",
     fontSize: 12,
+    textAlign: "center",
+    maxWidth: "100%",
   },
   notification: {
+    position: "relative",
     padding: 20,
     borderWidth: 1,
     marginBottom: 10,
     borderColor: "#f7f7f7",
     borderRadius: 10,
-    backgroundColor: "#a9110121",
+    backgroundColor: "#a9110120",
+    textAlign: I18nManager.isRTL ? "right" : "left",
   },
   totalUnseen: {
     position: "absolute",
@@ -292,6 +293,15 @@ const styles = StyleSheet.create({
     left: 3,
     top: -8,
   },
+  seen: {
+    position: "absolute",
+    [!I18nManager.isRTL ? "left" : "right"]: 10,
+    top: 25,
+    backgroundColor: "red",
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
   input: {
     textAlign: "right", // aligns cursor/text to the right
     writingDirection: "rtl", // supports RTL characters properly
@@ -305,6 +315,18 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 5,
     transitionDuration: "300ms",
+  },
+  filterButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    // padding: 13,
+    backgroundColor: "#fff",
+    textAlign: "center",
+    borderColor: "#f7f7f7",
+    borderWidth: 1,
+    height: 45,
   },
 });
 export default styles;

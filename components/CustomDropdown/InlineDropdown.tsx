@@ -1,3 +1,4 @@
+import { useThemeStore } from "@/store/themeStore";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -17,7 +18,7 @@ const InlineDropdown = ({ data, onSelect, placeholder }: Props) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const toggleDropdown = () => setDropdownVisible(!isDropdownVisible);
-
+  const { theme } = useThemeStore();
   useEffect(() => {
     if (data.length === 1) {
       setSelectedValue(data[0].label);
@@ -30,9 +31,25 @@ const InlineDropdown = ({ data, onSelect, placeholder }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
-        <Text style={styles.buttonText}>{selectedValue || placeholder}</Text>
+    <View style={[styles.container]}>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          {
+            backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+            borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
+          },
+        ]}
+        onPress={toggleDropdown}
+      >
+        <Text
+          style={[
+            styles.buttonText,
+            { color: theme === "dark" ? "#fff" : "grey" },
+          ]}
+        >
+          {selectedValue || placeholder}
+        </Text>
       </TouchableOpacity>
       {isDropdownVisible && (
         <View style={styles.dropdown}>
@@ -41,10 +58,23 @@ const InlineDropdown = ({ data, onSelect, placeholder }: Props) => {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={styles.option}
+                style={[
+                  styles.option,
+                  {
+                    backgroundColor: theme === "dark" ? "#31404e" : "#fff",
+                    borderColor: theme === "dark" ? "#15202b" : "#fff",
+                  },
+                ]}
                 onPress={() => handleSelect(item.value, item.label)}
               >
-                <Text style={styles.optionText}>{item.label}</Text>
+                <Text
+                  style={[
+                    styles.optionText,
+                    { color: theme === "dark" ? "#fff" : "grey" },
+                  ]}
+                >
+                  {item.label}
+                </Text>
               </TouchableOpacity>
             )}
           />

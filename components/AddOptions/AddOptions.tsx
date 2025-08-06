@@ -1,7 +1,7 @@
 import styles from "@/styles/filter";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { I18nManager, Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 
 interface Props {
@@ -32,15 +32,19 @@ export const AddOptions = ({ isVisible, close }: Props) => {
                 fontFamily: "CairoBold",
                 color: "#a91101",
                 marginBottom: 10,
+                textAlign: I18nManager.isRTL ? "right" : "left",
               }}
             >
               اضافه طلبات
             </Text>
           </View>
-          <Pressable
+          <TouchableOpacity
             style={styles.option}
             onPress={() => {
-              router.navigate("/addOrder");
+              close();
+              setTimeout(() => {
+                router.navigate("/addOrder");
+              }, 200);
             }}
           >
             <AntDesign name="pluscircleo" size={24} color="#a91101" />
@@ -49,12 +53,15 @@ export const AddOptions = ({ isVisible, close }: Props) => {
                 fontFamily: "Cairo",
               }}
             >
-              يدوى
+              يدوي
             </Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => {
-              router.navigate("/addExcel");
+              close();
+              setTimeout(() => {
+                router.navigate("/addExcel");
+              }, 200);
             }}
             style={styles.option}
           >
@@ -64,18 +71,21 @@ export const AddOptions = ({ isVisible, close }: Props) => {
                 fontFamily: "Cairo",
               }}
             >
-              اكسيل
+              اكسل
             </Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.option}
             onPress={() => {
-              router.push({
-                pathname: "/barcode",
-                params: {
-                  forAdd: "true",
-                },
-              });
+              close();
+              setTimeout(() => {
+                router.push({
+                  pathname: "/barcode",
+                  params: {
+                    forAdd: "true",
+                  },
+                });
+              }, 200);
             }}
           >
             <MaterialCommunityIcons
@@ -90,7 +100,7 @@ export const AddOptions = ({ isVisible, close }: Props) => {
             >
               ملصق
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>

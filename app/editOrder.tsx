@@ -1,6 +1,7 @@
 import { APIError } from "@/api";
 import NativeSearchableSelect from "@/components/AddOptions/dropDown";
 import MyRadioGroup from "@/components/CustomDropdown/RadioInput";
+import FloatingLabelInput from "@/components/FloatingLabelInput/FloatingLabelInput";
 import { useOrderDetails } from "@/hooks/useOrderDetails";
 import {
   governorateArabicNames,
@@ -10,13 +11,20 @@ import { queryClient } from "@/lib/queryClient";
 import { EditOrderPayload, editOrderService } from "@/services/editOrder";
 import { useLocationStore } from "@/store/locationStore";
 import { useStoreStore } from "@/store/storeStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/addOrder";
 import { Feather } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Pressable, StatusBar, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Pressable,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import { Flow, Fold } from "react-native-animated-spinkit";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -27,11 +35,7 @@ export default function EditOrder() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { receiptNumber, id } = useLocalSearchParams();
-  const nameRef = useRef<TextInput>(null);
-  const phoneRef = useRef<TextInput>(null);
-  const addressRef = useRef<TextInput>(null);
-  const totalRef = useRef<TextInput>(null);
-  const detailsRef = useRef<TextInput>(null);
+  const { theme } = useThemeStore();
 
   const [orderDate, setOrderData] = useState<EditOrderPayload>({
     recipientPhone: "",
@@ -150,11 +154,17 @@ export default function EditOrder() {
   };
 
   const formatPhone = (phone: string) => {
-    const cleaned = phone.replace(/[^0-9]/g, "");
-    const part1 = cleaned.slice(0, 4);
-    const part2 = cleaned.slice(4, 7);
-    const part3 = cleaned.slice(7, 11);
-    return [part1, part2, part3].filter(Boolean).join(" ");
+    if (phone.length < 5) {
+      return `${phone.slice(0, 4)}`;
+    } else if (phone.length > 4 && phone.length < 8) {
+      return `${phone.slice(0, 4)}-${phone.slice(4, 7)}`;
+    } else {
+      return `${phone.slice(0, 4)}-${phone.slice(4, 7)}-${phone.slice(7, 11)}`;
+    }
+  };
+
+  const formatNumber = (value: string | number) => {
+    return new Intl.NumberFormat("en-US").format(Number(value));
   };
 
   if (isLoading) {
@@ -174,7 +184,12 @@ export default function EditOrder() {
     );
   }
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       <StatusBar backgroundColor="#a91101" translucent={false} />
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
@@ -184,177 +199,175 @@ export default function EditOrder() {
           <Text
             style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}
           >
-            اضافه طلب {order ? " - " + order.data.receiptNumber : ""}
+            تعديل طلب {order ? " - " + order.data.receiptNumber : ""}
           </Text>
         </View>
         <View style={styles.navbarItem}></View>
       </View>
-      <ScrollView
-        style={{ flex: 1, padding: 10 }}
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingBottom: 30,
+      <KeyboardAvoidingView
+        behavior={"padding"}
+        style={{
+          flex: 1,
+          backgroundColor: theme === "dark" ? "#31404e" : "#fff",
         }}
+        keyboardVerticalOffset={0}
       >
-        <View>
-          <View style={styles.formGroup}>
-            <NativeSearchableSelect
-              options={stores.map((s) => ({
-                value: s.id + "",
-                label: s.name,
-              }))}
-              label="اختر المتجر"
-              setValue={(value) => {
-                setOrderData((pre) => ({ ...pre, storeID: +value }));
-              }}
-              value={
-                orderDate.storeID
-                  ? stores.find((s) => s.id === orderDate?.storeID)?.name
-                  : null
-              }
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="اسم الزبون"
-              onChangeText={(value) =>
-                setOrderData((pre) => ({ ...pre, recipientName: value }))
-              }
-              style={[styles.input]}
-              value={orderDate.recipientName}
-              placeholderTextColor={"grey"}
-              ref={nameRef}
-              allowFontScaling={false}
-              importantForAutofill="no"
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="هاتف الزبون xxxx xxx xxxx"
-              onChangeText={(value) => {
-                const cleaned = value.replace(/[^0-9]/g, "");
-
-                setOrderData((pre) => ({ ...pre, recipientPhone: cleaned }));
-              }}
-              style={[styles.input]}
-              value={
-                orderDate.recipientPhone
-                  ? formatPhone(orderDate.recipientPhone)
-                  : ""
-              }
-              placeholderTextColor={"grey"}
-              ref={phoneRef}
-              maxLength={13}
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <NativeSearchableSelect
-              options={governorateArray}
-              label="اختر المحافظه"
-              setValue={(value) => {
-                setOrderData((pre) => ({ ...pre, governorate: value }));
-              }}
-              value={
-                orderDate.governorate
-                  ? governorateArabicNames[
-                      orderDate.governorate as keyof typeof governorateArabicNames
-                    ]
-                  : null
-              }
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <NativeSearchableSelect
-              options={locations
-                .filter(
-                  (i) =>
-                    orderDate.governorate !== "" &&
-                    orderDate.governorate === i.governorate
-                )
-                .map((l) => ({
-                  value: l.id + "",
-                  label: l.name,
+        <ScrollView
+          style={{ flex: 1, padding: 10 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: 30,
+          }}
+        >
+          <View>
+            <View style={styles.formGroup}>
+              <NativeSearchableSelect
+                options={stores.map((s) => ({
+                  value: s.id + "",
+                  label: s.name,
                 }))}
-              label="اختر المنطقه"
-              setValue={(value) => {
-                setOrderData((pre) => ({ ...pre, locationID: +value }));
-              }}
-              value={
-                orderDate.locationID
-                  ? locations.find((s) => s.id === orderDate?.locationID)?.name
-                  : null
-              }
-            />
+                label="اختر المتجر"
+                setValue={(value) => {
+                  setOrderData((pre) => ({ ...pre, storeID: +value }));
+                }}
+                value={
+                  orderDate.storeID
+                    ? stores.find((s) => s.id === orderDate?.storeID)?.name
+                    : null
+                }
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <FloatingLabelInput
+                label="اسم الزبون"
+                onChangeText={(value) =>
+                  setOrderData((pre) => ({ ...pre, recipientName: value }))
+                }
+                value={orderDate.recipientName || ""}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <FloatingLabelInput
+                label="هاتف الزبون"
+                onChangeText={(value) => {
+                  const cleaned = value.replace(/[^0-9]/g, "");
+
+                  setOrderData((pre) => ({ ...pre, recipientPhone: cleaned }));
+                }}
+                value={
+                  orderDate.recipientPhone
+                    ? formatPhone(orderDate.recipientPhone)
+                    : ""
+                }
+                length={13}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <NativeSearchableSelect
+                options={governorateArray}
+                label="اختر المحافظه"
+                setValue={(value) => {
+                  setOrderData((pre) => ({
+                    ...pre,
+                    governorate: value,
+                    locationID: undefined,
+                  }));
+                }}
+                value={
+                  orderDate.governorate
+                    ? governorateArabicNames[
+                        orderDate.governorate as keyof typeof governorateArabicNames
+                      ]
+                    : null
+                }
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <NativeSearchableSelect
+                options={locations
+                  .filter(
+                    (i) =>
+                      orderDate.governorate !== "" &&
+                      orderDate.governorate === i.governorate
+                  )
+                  .map((l) => ({
+                    value: l.id + "",
+                    label: l.name,
+                  }))}
+                label="اختر المنطقه"
+                setValue={(value) => {
+                  setOrderData((pre) => ({ ...pre, locationID: +value }));
+                }}
+                value={
+                  orderDate.locationID
+                    ? locations.find((s) => s.id === orderDate?.locationID)
+                        ?.name
+                    : null
+                }
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <FloatingLabelInput
+                label="اقرب نقطه داله"
+                onChangeText={(value) =>
+                  setOrderData((pre) => ({ ...pre, recipientAddress: value }))
+                }
+                value={orderDate.recipientAddress || ""}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <FloatingLabelInput
+                label="السعر الكلي"
+                onChangeText={(value) => {
+                  const cleaned = value.replace(/[^0-9]/g, "");
+                  setOrderData((pre) => ({
+                    ...pre,
+                    totalCost: cleaned === "" ? undefined : Number(cleaned),
+                  }));
+                }}
+                value={
+                  orderDate.totalCost === undefined
+                    ? ""
+                    : formatNumber(orderDate.totalCost) + ""
+                }
+                length={7}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <FloatingLabelInput
+                label="تفاصيل الطلب"
+                onChangeText={(value) =>
+                  setOrderData((pre) => ({ ...pre, details: value }))
+                }
+                value={orderDate.details || ""}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <MyRadioGroup
+                data={[
+                  { value: "NORMAL", label: "عادي" },
+                  { value: "REPLACEMENT", label: "استبدال" },
+                ]}
+                onSelect={(value) =>
+                  setOrderData((pre) => ({ ...pre, deliveryType: value }))
+                }
+                value={orderDate.deliveryType}
+              />
+            </View>
+            <Pressable
+              style={styles.button}
+              onPress={() => submitHandler()}
+              disabled={isloadingEdit}
+            >
+              {isloadingEdit ? (
+                <Flow size={40} color="#fff" style={{ margin: "auto" }} />
+              ) : (
+                <Text style={styles.buttonText}>حفظ</Text>
+              )}
+            </Pressable>
           </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="اقرب نقطه داله"
-              onChangeText={(value) =>
-                setOrderData((pre) => ({ ...pre, recipientAddress: value }))
-              }
-              style={[styles.input]}
-              value={orderDate.recipientAddress}
-              placeholderTextColor={"grey"}
-              ref={addressRef}
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="السعر الكلي"
-              onChangeText={(value) => {
-                const cleaned = value.replace(/[^0-9]/g, "");
-                setOrderData((pre) => ({
-                  ...pre,
-                  totalCost: cleaned === "" ? undefined : Number(cleaned),
-                }));
-              }}
-              style={[styles.input]}
-              value={
-                orderDate.totalCost === undefined
-                  ? ""
-                  : orderDate.totalCost + ""
-              }
-              placeholderTextColor={"grey"}
-              ref={totalRef}
-              maxLength={7}
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <TextInput
-              placeholder="تفاصيل الطلب"
-              onChangeText={(value) =>
-                setOrderData((pre) => ({ ...pre, details: value }))
-              }
-              style={[styles.input]}
-              value={orderDate.details}
-              placeholderTextColor={"grey"}
-              ref={detailsRef}
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <MyRadioGroup
-              data={[
-                { value: "NORMAL", label: "عادى" },
-                { value: "REPLACEMENT", label: "استبدال" },
-              ]}
-              onSelect={(value) =>
-                setOrderData((pre) => ({ ...pre, deliveryType: value }))
-              }
-            />
-          </View>
-          <Pressable
-            style={styles.button}
-            onPress={() => submitHandler()}
-            disabled={isloadingEdit}
-          >
-            {isloadingEdit ? (
-              <Flow size={40} color="#fff" style={{ margin: "auto" }} />
-            ) : (
-              <Text style={styles.buttonText}>حفظ</Text>
-            )}
-          </Pressable>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }

@@ -5,6 +5,7 @@ export interface Filters {
   page: number;
   size: number;
   status: keyof typeof orderStatusArabicNames | undefined;
+  unRead?: string;
 }
 
 export interface Chat {
@@ -44,12 +45,18 @@ interface ChatMessagesResponse {
   data: Message[];
 }
 
-export const getChatService = async ({ page, size, status }: Filters) => {
+export const getChatService = async ({
+  page,
+  size,
+  status,
+  unRead,
+}: Filters) => {
   const response = await api.get<ChatResponse>("/chats", {
     params: {
       page: page || 1,
       size: size || 30,
       status: status || undefined,
+      unRead: unRead || undefined,
     },
   });
   return response.data;

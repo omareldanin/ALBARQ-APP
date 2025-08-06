@@ -1,11 +1,12 @@
 import { APIError } from "@/api";
-import InlineDropdown from "@/components/CustomDropdown/InlineDropdown";
+import NativeSearchableSelect from "@/components/AddOptions/dropDown";
 import { SheetOrderItem } from "@/components/Order/SheetOrder";
 import { useOrderSheet } from "@/hooks/useOrderSheet";
 import { handlePickExcel, OrderSheet } from "@/lib/readExcel";
 import { CreateOrderItem, createOrderService } from "@/services/addOrder";
 import { useLocationStore } from "@/store/locationStore";
 import { useStoreStore } from "@/store/storeStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/addOrder";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
@@ -45,6 +46,7 @@ export default function AddOrderExcel() {
   const [orderDate, setOrderData] = useState<OrderSheet[]>([]);
   const { locations } = useLocationStore();
   const { stores } = useStoreStore();
+  const { theme } = useThemeStore();
 
   useEffect(() => {
     if (stores.length === 1) {
@@ -103,7 +105,15 @@ export default function AddOrderExcel() {
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          paddingBottom: insets.bottom,
+          backgroundColor: theme === "dark" ? "#31404e" : "#fff",
+        },
+      ]}
+    >
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
           <Pressable onPress={() => router.back()}>
@@ -141,15 +151,20 @@ export default function AddOrderExcel() {
           renderItem={() => (
             <>
               <View style={styles.formGroup}>
-                <InlineDropdown
-                  data={stores.map((s) => ({
+                <NativeSearchableSelect
+                  options={stores.map((s) => ({
                     value: s.id + "",
                     label: s.name,
                   }))}
-                  placeholder="اختر المتجر"
-                  onSelect={(value) => {
-                    setOrderData((pre) => ({ ...pre, storeID: +value }));
+                  label="اختر المتجر"
+                  setValue={(value) => {
+                    setSelectedStore(+value);
                   }}
+                  value={
+                    selectedStore
+                      ? stores.find((s) => s.id === selectedStore)?.name
+                      : null
+                  }
                 />
               </View>
               <View style={{ direction: "rtl" }}>

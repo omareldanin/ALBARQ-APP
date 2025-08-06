@@ -7,10 +7,11 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,18 +22,19 @@ import Toast from "react-native-toast-message";
 export default function BarcodeScreen() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
   const { forAdd, received } = useLocalSearchParams();
-
+  const [id, setId] = useState<string | null>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
   const [cameraKey, setCameraKey] = useState(0);
   const { refreshStatistics } = useStatisticsStore();
+  const scannedRef = useRef(false);
+
   useEffect(() => {
     if (isFocused) {
       // Force remount camera when screen focuses
       setCameraKey((prev) => prev + 1);
-      setScanned(false); // allow retry if parsing failed
+      scannedRef.current = false;
     }
   }, [isFocused]);
 
@@ -47,17 +49,19 @@ export default function BarcodeScreen() {
       });
     },
     onSuccess: () => {
-      setScanned(false);
+      scannedRef.current = false;
       Toast.show({
         type: "success",
         text1: "تم بنجاح ✅",
         text2: "تم الاستلام بنجاح 🎉",
         position: "top",
       });
+      setId(null);
       refreshStatistics();
     },
     onError: (error: AxiosError<APIError>) => {
-      setScanned(false);
+      scannedRef.current = false;
+      setId(null);
       Toast.show({
         type: "error",
         text1: "حدث خطأ ❌",
@@ -95,13 +99,14 @@ export default function BarcodeScreen() {
         }}
         facing={facing}
         onBarcodeScanned={(props) => {
-          if (scanned) return; // prevent double navigation
-          setScanned(true);
+          if (scannedRef.current && !received) return;
 
           try {
             const data = JSON.parse(props.data);
+            scannedRef.current = true;
+
             if (received) {
-              sendOrders(data.id);
+              setId(data.id);
             } else if (forAdd) {
               router.push({
                 pathname: "/addOrder",
@@ -119,7 +124,7 @@ export default function BarcodeScreen() {
             }
           } catch (e) {
             console.warn("Invalid QR code");
-            setScanned(false); // allow retry if parsing failed
+            scannedRef.current = false; // allow retry
           }
         }}
       />
@@ -131,6 +136,29 @@ export default function BarcodeScreen() {
         <View style={styles.edgeBottomLeft} />
         <View style={styles.edgeBottomRight} />
       </View>
+      {received ? (
+        <View style={[styles.buttonContainer, { bottom: 120 }]}>
+          <Pressable
+            style={{
+              backgroundColor: "green",
+              padding: 10,
+              borderRadius: 5,
+              minWidth: 125,
+              alignItems: "center",
+              opacity: id ? 1 : 0.5,
+            }}
+            onPress={() => sendOrders(id || "")}
+          >
+            {isloadingSend ? (
+              <ActivityIndicator size={"small"} color={"#fff"} />
+            ) : (
+              <Text style={{ color: "#fff", fontFamily: "Cairo" }}>
+                استلام الطلب{id ? " - " + id : ""}
+              </Text>
+            )}
+          </Pressable>
+        </View>
+      ) : null}
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>

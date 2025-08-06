@@ -2,6 +2,7 @@ import { useStatusClients } from "@/hooks/useStatusClients";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/store/authStore";
 import { getSocket } from "@/store/socket";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/ordersStyles";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -24,6 +25,7 @@ export default function StatusClients() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
+  const { theme } = useThemeStore();
   const [search, setSearch] = useState("");
   const [data, setData] = useState<
     {
@@ -79,7 +81,12 @@ export default function StatusClients() {
   }, [id]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       <StatusBar translucent backgroundColor={"transparent"} />
 
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
@@ -105,9 +112,16 @@ export default function StatusClients() {
       <TextInput
         placeholder="ابحث ..."
         onChangeText={setSearch}
-        style={[styles.input]}
+        style={[
+          styles.input,
+          {
+            backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+            borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
+            color: theme === "dark" ? "#fff" : "grey",
+          },
+        ]}
         value={search}
-        placeholderTextColor={"grey"}
+        placeholderTextColor={theme === "dark" ? "#ccc" : "grey"}
       />
       {isLoading ? (
         <View
@@ -123,42 +137,59 @@ export default function StatusClients() {
           <Fold size={50} color="#A91101" />
         </View>
       ) : null}
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        style={{
-          padding: 10,
-          direction: "rtl",
-        }}
-      >
-        {data?.map((client) => (
-          <Pressable
-            key={client.clientId}
-            style={[styles.item2]}
-            onPress={() => {
-              router.push({
-                pathname: "/orders",
-                params: {
-                  status: status,
-                  clientId: client.clientId,
+      <View style={{ flex: 1, padding: 10 }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          style={{
+            direction: "rtl",
+          }}
+        >
+          {data?.map((client) => (
+            <Pressable
+              key={client.clientId}
+              style={[
+                styles.item2,
+                {
+                  backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                  borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
                 },
-              });
-            }}
-          >
-            <Ionicons name="storefront-outline" size={24} color="#a91101" />
+              ]}
+              onPress={() => {
+                router.push({
+                  pathname: "/orders",
+                  params: {
+                    status: status,
+                    clientId: client.clientId,
+                  },
+                });
+              }}
+            >
+              <Ionicons name="storefront-outline" size={24} color="#a91101" />
 
-            <View style={styles.statusName}>
-              <Text style={[styles.statusNameText, { fontSize: 13 }]}>
-                {client.clientName}
+              <View style={styles.statusName}>
+                <Text
+                  style={[
+                    styles.statusNameText,
+                    { fontSize: 13, color: theme === "dark" ? "#fff" : "#000" },
+                  ]}
+                >
+                  {client.clientName}
+                </Text>
+              </View>
+              <Text
+                style={[
+                  styles.statusCount,
+                  { color: theme === "dark" ? "#fff" : "#000" },
+                ]}
+              >
+                {formatNumber(client.count + "")}
               </Text>
-            </View>
-            <Text style={styles.statusCount}>
-              {formatNumber(client.count + "")}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }

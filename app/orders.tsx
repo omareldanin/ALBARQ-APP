@@ -8,6 +8,7 @@ import { downloadAndOpenPdf } from "@/services/getOrderReceipt";
 import { Order, OrdersFilter, OrdersMetaData } from "@/services/getOrders";
 import { useAuth } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/ordersStyles";
 import {
   AntDesign,
@@ -63,11 +64,12 @@ export const ordersFilterInitialState: OrdersFilter = {
 };
 
 export default function Orders() {
-  const { role } = useAuth();
+  const { role, permissions } = useAuth();
   const [openFilters, setOpenFilters] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<string[]>([]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { theme } = useThemeStore();
   const [ordersDate, setOrdersData] = useState<Order[]>([]);
   const { status, printed, receiptNumber, search, clientId } =
     useLocalSearchParams();
@@ -113,7 +115,7 @@ export default function Orders() {
       );
       return [...prev, ...newOrders];
     });
-  }, [orders]);
+  }, [orders, filters.page]);
 
   const removeFromData = (id: string) => {
     setOrdersData((pre) => pre.filter((o) => o.id !== id));
@@ -170,7 +172,12 @@ export default function Orders() {
   });
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       <StatusBar translucent backgroundColor={"transparent"} />
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
@@ -222,7 +229,7 @@ export default function Orders() {
         >
           <Text style={{ fontSize: 22, marginBottom: 10 }}>☹️</Text>
           <Text style={{ fontSize: 18, fontFamily: "Cairo" }}>
-            لا يوجد طلبات{" "}
+            لا يوجد طلبات
           </Text>
         </View>
       ) : null}
@@ -239,7 +246,7 @@ export default function Orders() {
               if (selectedOrder.length > 0) {
                 setSelectedOrder([]);
               } else {
-                setSelectedOrder(orders.data.orders.map((o) => o.id));
+                setSelectedOrder(ordersDate.map((o) => o.id));
               }
             }}
           >
@@ -293,42 +300,43 @@ export default function Orders() {
           )}
         </View>
       ) : null}
-      <FlatList
-        contentContainerStyle={{ paddingBottom: 150 }}
-        data={ordersDate}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <OrderItem
-            key={item.id}
-            order={item}
-            checked={selectedOrder.includes(item.id)}
-            setSelectedOrder={setSelectedOrder}
-            showCheckBox={printed ? true : false}
-            removeFromData={removeFromData}
-          />
-        )}
-        onEndReachedThreshold={0.2}
-        onEndReached={() => {
-          if (filters.page && orders.pagesCount > filters.page) {
-            setFilters((pre) => ({
-              ...pre,
-              page: filters.page ? filters.page + 1 : 1,
-            }));
+      <View style={{ flex: 1, paddingRight: 10, paddingLeft: 10 }}>
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 150 }}
+          data={ordersDate}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <OrderItem
+              key={item.id}
+              order={item}
+              checked={selectedOrder.includes(item.id)}
+              setSelectedOrder={setSelectedOrder}
+              showCheckBox={printed ? true : false}
+              removeFromData={removeFromData}
+            />
+          )}
+          onEndReachedThreshold={0.2}
+          onEndReached={() => {
+            if (filters.page && orders.pagesCount > filters.page) {
+              setFilters((pre) => ({
+                ...pre,
+                page: filters.page ? filters.page + 1 : 1,
+              }));
+            }
+          }}
+          ListFooterComponent={
+            isRefetching ? (
+              <ActivityIndicator size="small" color={"#a91101"} />
+            ) : null
           }
-        }}
-        ListFooterComponent={
-          isRefetching ? (
-            <ActivityIndicator size="small" color={"#a91101"} />
-          ) : null
-        }
-        style={{
-          flex: 1,
-          marginTop: printed ? 10 : 10,
-          paddingTop: printed ? 0 : 10,
-          direction: "rtl",
-          padding: 10,
-        }}
-      />
+          style={{
+            flex: 1,
+            marginTop: printed ? 10 : 10,
+            paddingTop: printed ? 0 : 10,
+            direction: "rtl",
+          }}
+        />
+      </View>
 
       <Filters
         isVisible={openFilters}
@@ -340,7 +348,7 @@ export default function Orders() {
       {role === "CLIENT" ||
       role === "INQUIRY_EMPLOYEE" ||
       role === "DELIVERY_AGENT" ||
-      role === "CLIENT_ASSISTANT" ? (
+      (role === "CLIENT_ASSISTANT" && permissions?.includes("MESSAGES")) ? (
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={() => router.navigate("/chats")}

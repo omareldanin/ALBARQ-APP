@@ -1,3 +1,4 @@
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/addOrder";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -8,9 +9,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function About() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       <StatusBar barStyle={"light-content"} />
 
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
@@ -27,11 +34,19 @@ export default function About() {
         <View style={styles.navbarItem}></View>
       </View>
       <View style={{ direction: "rtl", padding: 20, marginTop: 60 }}>
-        <Text style={{ fontFamily: "CairoBold", fontSize: 16 }}>من نحن؟</Text>
+        <Text
+          style={{
+            fontFamily: "CairoBold",
+            fontSize: 16,
+            color: theme === "dark" ? "#ccc" : "#000",
+          }}
+        >
+          من نحن؟
+        </Text>
         <Text
           style={{
             fontFamily: "Cairo",
-            color: "grey",
+            color: theme === "dark" ? "#fff" : "grey",
             marginTop: 20,
             lineHeight: 40,
           }}

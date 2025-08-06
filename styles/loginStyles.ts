@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { I18nManager, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,13 +12,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  text: {
-    fontFamily: "CairoBold",
-    fontSize: 22,
-    // fontWeight: "900",
-    marginTop: 20,
-    marginBottom: 35,
-  },
+
   form: {
     direction: "rtl",
     backgroundColor: "#fff",
@@ -28,8 +22,16 @@ const styles = StyleSheet.create({
     padding: 20,
     height: "100%",
   },
+  text: {
+    fontFamily: "CairoBold",
+    fontSize: 22,
+    marginTop: 20,
+    marginBottom: 35,
+    textAlign: I18nManager.isRTL ? "right" : "left",
+  },
   inputContainer: {
     position: "relative",
+    marginBottom: 15,
   },
   icon: {
     position: "absolute",

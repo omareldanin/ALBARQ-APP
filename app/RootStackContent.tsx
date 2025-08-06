@@ -44,6 +44,7 @@ export default function RootStackContent() {
       setLocalToken(token);
       setLocalRefresh(refresh);
       setTokensLoaded(true);
+
       await validateTokens();
     };
 

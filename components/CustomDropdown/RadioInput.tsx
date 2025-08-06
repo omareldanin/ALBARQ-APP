@@ -1,19 +1,14 @@
-import { useState } from "react";
+import { useThemeStore } from "@/store/themeStore";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-const options = [
-  { label: "Option 1", value: "1" },
-  { label: "Option 2", value: "2" },
-];
 
 interface Props {
   data: { label: string; value: string }[];
   onSelect: (value: string) => void;
+  value?: string;
 }
 
-export default function MyRadioGroup({ data, onSelect }: Props) {
-  const [selected, setSelected] = useState<string | null>(data[0].value);
-
+export default function MyRadioGroup({ data, onSelect, value }: Props) {
+  const { theme } = useThemeStore();
   return (
     <View style={styles.container}>
       {data.map((opt) => (
@@ -21,14 +16,20 @@ export default function MyRadioGroup({ data, onSelect }: Props) {
           key={opt.value}
           style={styles.radioContainer}
           onPress={() => {
-            setSelected(opt.value);
             onSelect(opt.value);
           }}
         >
           <View style={styles.radioCircle}>
-            {selected === opt.value && <View style={styles.radioDot} />}
+            {value === opt.value && <View style={styles.radioDot} />}
           </View>
-          <Text style={styles.radioLabel}>{opt.label}</Text>
+          <Text
+            style={[
+              styles.radioLabel,
+              { color: theme === "dark" ? "#fff" : "#000" },
+            ]}
+          >
+            {opt.label}
+          </Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
     width: "50%",
+    gap: 15,
   },
   radioCircle: {
     height: 20,
@@ -62,7 +64,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#a91101",
   },
   radioLabel: {
-    marginRight: 10,
     fontSize: 16,
   },
 });

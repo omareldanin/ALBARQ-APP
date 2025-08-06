@@ -1,10 +1,147 @@
-import { StyleSheet } from "react-native";
+import { I18nManager, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     maxHeight: "100%",
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 15,
+    gap: 10,
+  },
+  button: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    // padding: 13,
+    backgroundColor: "#f7f7f7",
+    textAlign: "center",
+    borderColor: "#f7f7f7",
+    borderWidth: 1,
+    height: 48,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "#fff",
+    fontSize: 14,
+    fontFamily: "CairoBold",
+  },
+  active: {
+    borderColor: "#A91101",
+    backgroundColor: "#fff",
+    color: "#A91101",
+  },
+  controlsContainers: {
+    padding: 20,
+    backgroundColor: "#a9110121",
+    margin: 10,
+    marginTop: 5,
+    borderRadius: 10,
+  },
+  numbers: {
+    display: "flex",
+    direction: "rtl",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  number: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  numberText: {
+    textAlign: "right",
+    fontFamily: "CairoBold",
+    marginRight: 10,
+    fontSize: 13,
+  },
+  controls: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 40,
+    direction: "rtl",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#A91101",
+    width: 35,
+    height: 35,
+    borderRadius: "50%",
+  },
+  btnText: {
+    fontFamily: "Cairo",
+    fontSize: 12,
+    marginRight: 9,
+    width: 40,
+    lineHeight: 15,
+  },
+  statistics: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    direction: "rtl",
+    padding: 10,
+    paddingTop: 5,
+  },
+  item: {
+    position: "relative",
+    backgroundColor: "#fff",
+    borderColor: "#f7f7f7",
+    borderWidth: 1,
+    width: "31.5%",
+    padding: 12,
+    // aspectRatio: 1, // Square shape
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    borderRadius: 6,
+  },
+  item2: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderColor: "#f7f7f7",
+    borderWidth: 1,
+    padding: 18,
+    // aspectRatio: 1, // Square shape
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    borderRadius: 6,
+  },
+  statusIcon2: {
+    width: 22,
+    height: 22,
+  },
+  statusIcon: {
+    position: "absolute",
+    right: 5,
+    top: 5,
+    width: 17,
+    height: 17,
+  },
+  statusCount: {
+    marginBottom: 5,
+    fontSize: 12,
+  },
+  statusName: {
+    flexDirection: "row",
+  },
+  statusNameText: {
+    fontFamily: "CairoBold",
+    fontSize: 8,
   },
   navbar: {
     backgroundColor: "#A91101",
@@ -21,46 +158,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-  },
-  input: {
-    textAlign: "right", // aligns cursor/text to the right
-    writingDirection: "rtl", // supports RTL characters properly
-    paddingRight: 15,
     direction: "rtl",
-    height: 50,
-    borderColor: "#f7f7f7",
-    color: "#000",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    fontFamily: "Cairo",
   },
-  inputFocused: {
-    borderColor: "#A91101",
-  },
-  form: {
-    padding: 10,
-    flex: 1,
-  },
-  formGroup: {
+  bell: {
     position: "relative",
-    marginBottom: 15,
   },
-  button: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 5,
-    // padding: 13,
+  bellNumber: {
+    position: "absolute",
+    top: -10,
+    left: 8,
+    zIndex: 555,
+    width: 20,
+    height: 20,
+    fontSize: 10,
+    paddingTop: 3,
+    backgroundColor: "red",
+    color: "#FFF",
+    textAlign: "center",
+    borderRadius: 10,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 60,
+    [!I18nManager.isRTL ? "left" : "right"]: 10,
     backgroundColor: "#A91101",
-    textAlign: "center",
-    height: 50,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16,
-    fontFamily: "CairoBold",
+    padding: 12,
+    borderRadius: 30,
+    elevation: 5, // for Android shadow
+    shadowColor: "#000", // for iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   order: {
     paddingTop: 15,
@@ -77,9 +205,8 @@ const styles = StyleSheet.create({
   head: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
     marginBottom: 15,
-    paddingTop: 10,
   },
   info: {
     marginTop: 15,
@@ -97,7 +224,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   collapsed: {
-    height: 110,
+    height: 70,
   },
   expanded: {
     height: "auto",
@@ -105,14 +232,81 @@ const styles = StyleSheet.create({
   selectButtons: {},
   orderHead: {
     direction: "rtl",
-    marginTop: 10,
-    padding: 10,
   },
   orderItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 15,
+    marginBottom: 10,
+  },
+  orderDetails: {
+    padding: 20,
+    paddingBottom: 0,
+    direction: "rtl",
+  },
+  h2: {
+    fontFamily: "CairoBold",
+    color: "#a91101",
+    marginTop: 10,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  total: {
+    direction: "rtl",
+    padding: 10,
+    paddingVertical: 20,
+    borderWidth: 1,
+    margin: 10,
+    borderColor: "#f7f7f7",
+    borderRadius: 10,
+  },
+  orderTimeLine: {
+    direction: "rtl",
+    paddingTop: 10,
+  },
+  orderTimeLineItem: {
+    marginBottom: 5,
+    alignItems: "center",
+  },
+  orderTimeLineItemText: {
+    fontFamily: "Cairo",
+    color: "#a91101",
+    fontSize: 12,
+  },
+  notification: {
+    padding: 20,
+    borderWidth: 1,
+    marginBottom: 10,
+    borderColor: "#f7f7f7",
+    borderRadius: 10,
+    backgroundColor: "#a9110121",
+  },
+  totalUnseen: {
+    position: "absolute",
+    width: 20,
+    height: 20,
+    backgroundColor: "red",
+    color: "#fff",
+    borderRadius: 10,
+    zIndex: 555,
+    fontSize: 10,
+    paddingTop: 3,
+    textAlign: "center",
+    left: 3,
+    top: -8,
+  },
+  input: {
+    textAlign: "right", // aligns cursor/text to the right
+    writingDirection: "rtl", // supports RTL characters properly
+    paddingRight: 35,
+    direction: "rtl",
+    height: 50,
+    borderColor: "#f7f7f7",
+    color: "grey",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    margin: 10,
+    borderRadius: 5,
+    transitionDuration: "300ms",
   },
 });
-
 export default styles;

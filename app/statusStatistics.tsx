@@ -1,6 +1,7 @@
 import { useAuth } from "@/store/authStore";
 import { getSocket } from "@/store/socket";
 import { useStatusStatisticsStore } from "@/store/statusStatisticsStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/ordersStyles";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -23,7 +24,7 @@ export default function StatusStatics() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
-
+  const { theme } = useThemeStore();
   const {
     statusStatistics,
     loading: loadingStatistics,
@@ -64,7 +65,12 @@ export default function StatusStatics() {
   }, [id]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       <StatusBar translucent backgroundColor={"transparent"} />
 
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
@@ -101,46 +107,63 @@ export default function StatusStatics() {
           <Fold size={50} color="#A91101" />
         </View>
       ) : null}
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        style={{
-          padding: 10,
-          marginTop: 15,
-          direction: "rtl",
-        }}
-      >
-        {statusStatistics?.map((status) => (
-          <Pressable
-            key={status.status}
-            style={[styles.item2]}
-            onPress={() => {
-              router.push({
-                pathname: "/orders",
-                params: {
-                  status: status.status,
+      <View style={{ flex: 1, padding: 10 }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          style={{
+            marginTop: 15,
+            direction: "rtl",
+          }}
+        >
+          {statusStatistics?.map((status) => (
+            <Pressable
+              key={status.status}
+              style={[
+                styles.item2,
+                {
+                  backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                  borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
                 },
-              });
-            }}
-          >
-            <Image
-              source={{ uri: status.icon }}
-              resizeMode="contain"
-              style={styles.statusIcon2}
-            />
+              ]}
+              onPress={() => {
+                router.push({
+                  pathname: "/orders",
+                  params: {
+                    status: status.status,
+                  },
+                });
+              }}
+            >
+              <Image
+                source={{ uri: `${status.icon}?v=1` }}
+                resizeMode="contain"
+                style={styles.statusIcon2}
+              />
 
-            <View style={styles.statusName}>
-              <Text style={[styles.statusNameText, { fontSize: 13 }]}>
-                {status.name}
+              <View style={styles.statusName}>
+                <Text
+                  style={[
+                    styles.statusNameText,
+                    { fontSize: 13, color: theme === "dark" ? "#fff" : "#000" },
+                  ]}
+                >
+                  {status.name}
+                </Text>
+              </View>
+              <Text
+                style={[
+                  styles.statusCount,
+                  { color: theme === "dark" ? "#fff" : "#000" },
+                ]}
+              >
+                {formatNumber(status.count + "")}
               </Text>
-            </View>
-            <Text style={styles.statusCount}>
-              {formatNumber(status.count + "")}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }

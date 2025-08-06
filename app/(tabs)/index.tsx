@@ -1,5 +1,6 @@
 import { AddOptions } from "@/components/AddOptions/AddOptions";
 import { LoadingSpinner } from "@/components/LoadingSpinner/LoadingSpinner";
+import ConfirmOrder from "@/components/ReceiveOptions/Confirm";
 import { ReceiveOptions } from "@/components/ReceiveOptions/ReceiveOptions";
 import ImageSlider from "@/components/Slider/Slider";
 import { useAuth } from "@/store/authStore";
@@ -12,6 +13,7 @@ import { useNotificationStore } from "@/store/notification";
 import { getSocket } from "@/store/socket";
 import { useStatisticsStore } from "@/store/statisticsStore";
 import { useStoreStore } from "@/store/storeStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/homeStyles";
 import { AntDesign, Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -31,7 +33,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Home() {
-  const { id, role } = useAuth();
+  const { id, role, permissions } = useAuth();
   const { banners, loading, fetchBanners, refreshBanners } = useBannerStore();
   const { fetchClients, refreshClients } = useClientStore();
   const { fetchLocations, refreshLocations } = useLocationStore();
@@ -39,6 +41,8 @@ export default function Home() {
   const { fetchStores, refreshStores } = useStoreStore();
   const [showAddOptions, setShowAddOption] = useState(false);
   const [showReceivingOptions, setShowReceivingOption] = useState(false);
+  const { theme } = useThemeStore();
+
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
@@ -51,6 +55,7 @@ export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [showAddReceiptNumber, setShowAddReceiptNumber] = useState(false);
 
   const { unSeenCount, fetchNotifications, refreshNotifications } =
     useNotificationStore();
@@ -66,7 +71,7 @@ export default function Home() {
     fetchLocations();
     fetchBranches();
     fetchStores();
-    fetchNotifications(1, 2);
+    fetchNotifications(1, 25, false);
     if (
       role === "CLIENT" ||
       role === "INQUIRY_EMPLOYEE" ||
@@ -138,7 +143,10 @@ export default function Home() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         contentContainerStyle={{ paddingBottom: 100 }}
-        style={styles.container}
+        style={[
+          styles.container,
+          { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+        ]}
       >
         {showSearch ? (
           <View style={[styles.searchContainer, { top: insets.top }]}>
@@ -201,31 +209,59 @@ export default function Home() {
         )}
 
         {banners.length > 0 ? <ImageSlider banners={banners} /> : null}
-        {role !== "RECEIVING_AGENT" && role !== "INQUIRY_EMPLOYEE" ? (
+        {role !== "RECEIVING_AGENT" &&
+        role !== "INQUIRY_EMPLOYEE" &&
+        role !== "CLIENT_ASSISTANT" ? (
           <>
             <View style={styles.buttonsContainer}>
               <Pressable
-                style={[styles.button, showTodayNumber ? styles.active : null]}
+                style={[
+                  styles.button,
+                  showTodayNumber ? styles.active : null,
+                  {
+                    backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                    borderColor: showTodayNumber
+                      ? "#a91101"
+                      : theme === "dark"
+                        ? "grey"
+                        : "#f7f7f7",
+                  },
+                ]}
                 onPress={() => setShowTodayNumber(true)}
               >
                 <Text
                   style={[
                     styles.buttonText,
                     showTodayNumber ? styles.active : null,
+                    { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
                   ]}
+                  allowFontScaling={false}
                 >
                   طلبات اليوم
                 </Text>
               </Pressable>
               <Pressable
-                style={[styles.button, !showTodayNumber ? styles.active : null]}
+                style={[
+                  styles.button,
+                  !showTodayNumber ? styles.active : null,
+                  {
+                    backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                    borderColor: !showTodayNumber
+                      ? "#a91101"
+                      : theme === "dark"
+                        ? "grey"
+                        : "#f7f7f7",
+                  },
+                ]}
                 onPress={() => setShowTodayNumber(false)}
               >
                 <Text
                   style={[
                     styles.buttonText,
                     !showTodayNumber ? styles.active : null,
+                    { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
                   ]}
+                  allowFontScaling={false}
                 >
                   المبلغ الصافي
                 </Text>
@@ -234,12 +270,25 @@ export default function Home() {
           </>
         ) : null}
         {role !== "INQUIRY_EMPLOYEE" ? (
-          <View style={styles.controlsContainers}>
-            {role !== "RECEIVING_AGENT" && role !== "INQUIRY_EMPLOYEE" ? (
+          <View
+            style={[
+              styles.controlsContainers,
+              { backgroundColor: theme === "dark" ? "#a9110170" : "#a9110121" },
+            ]}
+          >
+            {role !== "RECEIVING_AGENT" &&
+            role !== "INQUIRY_EMPLOYEE" &&
+            role !== "CLIENT_ASSISTANT" ? (
               <View style={styles.numbers}>
                 <View style={styles.number}>
                   <Feather name="box" size={26} color="#A91101" />
-                  <Text style={styles.numberText}>
+                  <Text
+                    style={[
+                      styles.numberText,
+                      { color: theme === "dark" ? "#fff" : "#000" },
+                    ]}
+                    allowFontScaling={false}
+                  >
                     {showTodayNumber
                       ? formatNumber(
                           statistics?.todayOrdersStatistics.count + ""
@@ -257,7 +306,13 @@ export default function Home() {
                     size={24}
                     color="#A91101"
                   />
-                  <Text style={styles.numberText}>
+                  <Text
+                    style={[
+                      styles.numberText,
+                      { color: theme === "dark" ? "#fff" : "#000" },
+                    ]}
+                    allowFontScaling={false}
+                  >
                     {showTodayNumber
                       ? formatNumber(
                           statistics?.todayOrdersStatistics.totalCost + ""
@@ -272,90 +327,161 @@ export default function Home() {
               </View>
             ) : null}
             {role === "RECEIVING_AGENT" ? (
-              <View style={styles.controls}>
+              <View style={[styles.controls]}>
                 <Pressable
-                  style={styles.buttonContainer}
+                  style={[styles.buttonContainer, { marginVertical: 5 }]}
                   onPress={() => setShowReceivingOption(true)}
                 >
                   <View style={styles.icon}>
                     <MaterialCommunityIcons
                       name="qrcode-scan"
                       size={24}
-                      color="#fff"
+                      color="#a91101"
                     />
                   </View>
-                  <Text style={[styles.btnText, { width: 100, fontSize: 15 }]}>
+                  <Text
+                    style={[
+                      styles.btnText,
+                      {
+                        width: 100,
+                        fontSize: 15,
+                        color: theme === "dark" ? "#fff" : "#000",
+                      },
+                    ]}
+                    allowFontScaling={false}
+                  >
                     إستلام شحنات
                   </Text>
                 </Pressable>
               </View>
-            ) : role === "CLIENT" ? (
+            ) : role === "CLIENT" || role === "CLIENT_ASSISTANT" ? (
               <View style={styles.controls}>
-                <Pressable
-                  style={styles.buttonContainer}
-                  onPress={() => setShowAddOption(true)}
-                >
-                  <View style={styles.icon}>
-                    <MaterialCommunityIcons
-                      name="checkbox-marked-circle-plus-outline"
-                      size={24}
-                      color="#fff"
-                    />
-                  </View>
-                  <Text style={styles.btnText}>إضافه شحنه</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.buttonContainer}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/orders",
-                      params: {
-                        status: "REGISTERED",
-                        printed: "false",
-                      },
-                    })
-                  }
-                >
-                  <View style={styles.icon}>
-                    <Feather name="printer" size={24} color="#fff" />
-                  </View>
-                  <Text style={styles.btnText}>طباعه</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.buttonContainer}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/orders",
-                      params: {
-                        status: "REGISTERED",
-                        printed: "true",
-                      },
-                    })
-                  }
-                >
-                  <View style={styles.icon}>
-                    <MaterialCommunityIcons
-                      name="truck-delivery-outline"
-                      size={24}
-                      color="#fff"
-                    />
-                  </View>
-                  <Text style={styles.btnText}>إرسال للشحن</Text>
-                </Pressable>
+                {role === "CLIENT" ||
+                (role === "CLIENT_ASSISTANT" &&
+                  permissions?.includes("ADD_ORDER")) ? (
+                  <Pressable
+                    style={styles.buttonContainer}
+                    onPress={() => setShowAddOption(true)}
+                  >
+                    <View style={styles.icon}>
+                      <Image
+                        source={require("../../assets/images/add.png")}
+                        resizeMode="contain"
+                        style={{
+                          width: 30,
+                          height: 30,
+                        }}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.btnText,
+                        { color: theme === "dark" ? "#fff" : "#000" },
+                      ]}
+                      allowFontScaling={false}
+                    >
+                      إضافه شحنه
+                    </Text>
+                  </Pressable>
+                ) : null}
+                {role === "CLIENT" ||
+                (role === "CLIENT_ASSISTANT" &&
+                  permissions?.includes("PRINT_ORDER")) ? (
+                  <Pressable
+                    style={styles.buttonContainer}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/orders",
+                        params: {
+                          status: "REGISTERED",
+                          printed: "false",
+                        },
+                      })
+                    }
+                  >
+                    <View style={styles.icon}>
+                      <Image
+                        source={require("../../assets/images/printer.png")}
+                        resizeMode="contain"
+                        style={{
+                          width: 30,
+                          height: 30,
+                        }}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.btnText,
+                        { color: theme === "dark" ? "#fff" : "#000" },
+                      ]}
+                      allowFontScaling={false}
+                    >
+                      طباعه
+                    </Text>
+                  </Pressable>
+                ) : null}
+                {role === "CLIENT" ||
+                (role === "CLIENT_ASSISTANT" &&
+                  permissions?.includes("SEND_ORDER")) ? (
+                  <Pressable
+                    style={styles.buttonContainer}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/orders",
+                        params: {
+                          status: "REGISTERED",
+                          printed: "true",
+                        },
+                      })
+                    }
+                  >
+                    <View style={styles.icon}>
+                      <Image
+                        source={require("../../assets/images/delivery-truck.png")}
+                        resizeMode="contain"
+                        style={{
+                          width: 30,
+                          height: 30,
+                        }}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.btnText,
+                        { color: theme === "dark" ? "#fff" : "#000" },
+                      ]}
+                      allowFontScaling={false}
+                    >
+                      إرسال للشحن
+                    </Text>
+                  </Pressable>
+                ) : null}
               </View>
             ) : null}
             {role === "DELIVERY_AGENT" ? (
               <View style={styles.controls}>
                 <Pressable style={styles.buttonContainer}>
                   <Text
-                    style={[styles.btnText, { width: "auto", fontSize: 12 }]}
+                    style={[
+                      styles.btnText,
+                      {
+                        width: "auto",
+                        fontSize: 12,
+                        color: theme === "dark" ? "#fff" : "#000",
+                      },
+                    ]}
+                    allowFontScaling={false}
                   >
                     صافي المندوب
                   </Text>
                   <Text
                     style={[
                       styles.btnText,
-                      { fontSize: 12, fontFamily: "CairoBold" },
+                      {
+                        fontSize: 12,
+                        fontFamily: "CairoBold",
+                        color: theme === "dark" ? "#fff" : "#000",
+                      },
                     ]}
                   >
                     {formatNumber(
@@ -366,15 +492,28 @@ export default function Home() {
                 </Pressable>
                 <Pressable style={styles.buttonContainer}>
                   <Text
-                    style={[styles.btnText, { width: "auto", fontSize: 12 }]}
+                    style={[
+                      styles.btnText,
+                      {
+                        width: "auto",
+                        fontSize: 12,
+                        color: theme === "dark" ? "#fff" : "#000",
+                      },
+                    ]}
+                    allowFontScaling={false}
                   >
                     صافي الفرع
                   </Text>
                   <Text
                     style={[
                       styles.btnText,
-                      { fontSize: 12, fontFamily: "CairoBold" },
+                      {
+                        fontSize: 12,
+                        fontFamily: "CairoBold",
+                        color: theme === "dark" ? "#fff" : "#000",
+                      },
                     ]}
+                    allowFontScaling={false}
                   >
                     {(
                       (statistics?.allOrdersStatisticsWithoutDeliveryReport
@@ -392,7 +531,14 @@ export default function Home() {
           {statistics?.ordersStatisticsByStatus.map((status) => (
             <Pressable
               key={status.status}
-              style={styles.item}
+              style={[
+                styles.item,
+                {
+                  backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+                  borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
+                  shadowColor: theme === "dark" ? "#000" : "#ccc",
+                },
+              ]}
               onPress={() => {
                 if (role === "RECEIVING_AGENT") {
                   router.push({
@@ -419,20 +565,33 @@ export default function Home() {
               }}
             >
               <Image
-                source={{ uri: status.icon }}
+                source={{ uri: `${status.icon}?v=1` }}
                 resizeMode="contain"
                 style={styles.statusIcon}
               />
-              <Text style={styles.statusCount}>
+              <Text
+                style={[
+                  styles.statusCount,
+                  { color: theme === "dark" ? "#fff" : "#000" },
+                ]}
+              >
                 {formatNumber(status.count + "")}
               </Text>
               <View style={styles.statusName}>
-                <Text style={styles.statusNameText}>{status.name}</Text>
+                <Text
+                  style={[
+                    styles.statusNameText,
+                    { color: theme === "dark" ? "#fff" : "#000" },
+                  ]}
+                >
+                  {status.name}
+                </Text>
               </View>
             </Pressable>
           ))}
         </View>
       </ScrollView>
+
       <AddOptions
         isVisible={showAddOptions}
         close={() => setShowAddOption(false)}
@@ -441,12 +600,19 @@ export default function Home() {
       <ReceiveOptions
         isVisible={showReceivingOptions}
         close={() => setShowReceivingOption(false)}
+        openAdd={() => setShowAddReceiptNumber(true)}
+      />
+
+      <ConfirmOrder
+        visible={showAddReceiptNumber}
+        onClose={() => setShowAddReceiptNumber(false)}
+        onCancel={() => close()}
       />
 
       {role === "CLIENT" ||
       role === "INQUIRY_EMPLOYEE" ||
       role === "DELIVERY_AGENT" ||
-      role === "CLIENT_ASSISTANT" ? (
+      (role === "CLIENT_ASSISTANT" && permissions?.includes("MESSAGES")) ? (
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={() => router.navigate("/chats")}

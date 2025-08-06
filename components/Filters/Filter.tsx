@@ -71,6 +71,14 @@ export const Filters = ({
             >
               تصفيه
             </Text>
+
+            {/* <DateInput
+              title={orderFilters.start_date?.toLocaleString() || "من تاريخ"}
+              onChange={(e, date) => {
+                setOrdersData([]);
+                setFilters((pre) => ({ ...pre, start_date: date }));
+              }}
+            /> */}
             <TextInput
               placeholder="رقم الهاتف , رقم الوصل , الاسم"
               style={[styles.input]}

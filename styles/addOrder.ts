@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { I18nManager, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -17,17 +17,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     direction: "rtl",
   },
+  image: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
   navbarItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     direction: "rtl",
   },
+  icon: {
+    position: "absolute",
+    [!I18nManager.isRTL ? "right" : "left"]: "40%",
+    top: 50,
+  },
   input: {
     textAlign: "right", // aligns cursor/text to the right
-    writingDirection: "rtl", // supports RTL characters properly
     paddingRight: 15,
-    direction: "rtl",
     height: 50,
     borderColor: "#f7f7f7",
     color: "#000",
@@ -47,6 +57,18 @@ const styles = StyleSheet.create({
     position: "relative",
     marginBottom: 15,
   },
+  formGroupImage: {
+    position: "relative",
+    marginBottom: 15,
+    alignItems: "center",
+  },
+  label: {
+    marginBottom: 4,
+    color: "#555",
+    fontSize: 14,
+    fontWeight: "600",
+    fontFamily: "Cairo",
+  },
   button: {
     display: "flex",
     justifyContent: "center",
@@ -62,6 +84,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontFamily: "CairoBold",
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    direction: "rtl",
+    gap: 10,
+    marginTop: 10,
   },
 });
 

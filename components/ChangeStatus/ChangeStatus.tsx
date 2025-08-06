@@ -1,21 +1,22 @@
-import { orderStatusArabicNames } from "@/lib/orderStatusArabicNames";
+import {
+  orderStatusArabicNames,
+  orderStatusColors,
+} from "@/lib/orderStatusArabicNames";
 import { useAuth } from "@/store/authStore";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/filter";
-import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Modal from "react-native-modal";
-import ConfirmStatus from "../ConfirmStatus/ConfirmStatus";
 
 interface Props {
   isVisible: boolean;
   close: () => void;
-  receiptNumber: string | undefined;
+  showConfirm: (status: string) => void;
 }
 
-export const ChangeStatus = ({ isVisible, close, receiptNumber }: Props) => {
-  const [showOptions, setShowOptions] = useState(false);
-  const [status, setSelectedStatus] = useState("");
+export const ChangeStatus = ({ isVisible, close, showConfirm }: Props) => {
   const { orderStatus } = useAuth();
+  const { theme } = useThemeStore();
   return (
     <View style={styles.container}>
       <Modal
@@ -31,15 +32,19 @@ export const ChangeStatus = ({ isVisible, close, receiptNumber }: Props) => {
         animationOut="slideOutDown"
       >
         <ScrollView
+          style={[
+            styles.modalContent,
+            { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+          ]}
           contentContainerStyle={{ paddingBottom: 100 }}
-          style={styles.modalContent}
         >
           <View>
             <Text
               style={{
                 fontFamily: "CairoBold",
                 color: "#a91101",
-                marginBottom: 10,
+                marginBottom: 20,
+                textAlign: "center",
               }}
             >
               تغيير الحاله
@@ -47,16 +52,28 @@ export const ChangeStatus = ({ isVisible, close, receiptNumber }: Props) => {
           </View>
           {orderStatus?.map((status) => (
             <Pressable
-              style={styles.option}
+              style={[
+                styles.option,
+                {
+                  justifyContent: "center",
+                  borderColor:
+                    orderStatusColors[status as keyof typeof orderStatusColors],
+                  backgroundColor:
+                    orderStatusColors[status as keyof typeof orderStatusColors],
+                },
+              ]}
               key={status}
               onPress={() => {
-                setSelectedStatus(status);
-                setShowOptions(true);
+                close();
+                setTimeout(() => {
+                  showConfirm(status);
+                }, 100);
               }}
             >
               <Text
                 style={{
-                  fontFamily: "Cairo",
+                  fontFamily: "CairoBold",
+                  color: "#fff",
                 }}
               >
                 {
@@ -69,19 +86,6 @@ export const ChangeStatus = ({ isVisible, close, receiptNumber }: Props) => {
           ))}
         </ScrollView>
       </Modal>
-      <ConfirmStatus
-        visible={showOptions}
-        title="تغيير الحاله"
-        receiptNumber={receiptNumber}
-        onCancel={() => {
-          setShowOptions(false);
-          close();
-        }}
-        onClose={() => {
-          setShowOptions(false);
-        }}
-        status={status as keyof typeof orderStatusArabicNames}
-      />
     </View>
   );
 };

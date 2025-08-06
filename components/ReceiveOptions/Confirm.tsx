@@ -1,7 +1,19 @@
-import { useRouter } from "expo-router";
+import { APIError } from "@/api";
+import { editOrderService } from "@/services/editOrder";
+import { useStatisticsStore } from "@/store/statisticsStore";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 interface ConfirmDialogProps {
   visible: boolean;
@@ -18,71 +30,108 @@ const ConfirmOrder: React.FC<ConfirmDialogProps> = ({
     undefined
   );
 
-  const router = useRouter();
+  const { refreshStatistics } = useStatisticsStore();
+
+  const { mutate: sendOrders, isPending: isloadingSend } = useMutation({
+    mutationFn: () => {
+      return editOrderService({
+        id: receiptNumber || "",
+        data: {
+          confirmed: true,
+          status: "WITH_RECEIVING_AGENT",
+        },
+      });
+    },
+    onSuccess: () => {
+      Toast.show({
+        type: "success",
+        text1: "تم بنجاح ✅",
+        text2: "تم الاستلام بنجاح 🎉",
+        position: "top",
+      });
+      refreshStatistics();
+      setReceiptNumber("");
+    },
+    onError: (error: AxiosError<APIError>) => {
+      Toast.show({
+        type: "error",
+        text1: "حدث خطأ ❌",
+        text2: error.response?.data.message || "الرجاء التأكد من البيانات",
+        position: "top",
+      });
+    },
+  });
 
   const onConfirm = () => {
-    router.push({
-      pathname: "/orders",
-      params: {
-        receiptNumber: receiptNumber,
-      },
-    });
-    onCancel();
+    sendOrders();
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.dialog}>
-          <Text style={styles.title}>بحث برقم الوصل</Text>
-          <TextInput
-            placeholder="رقم الوصل"
-            onChangeText={setReceiptNumber}
-            style={[styles.input, { marginBottom: 10 }]}
-            value={receiptNumber}
-            placeholderTextColor={"#000"}
-          />
+    <View style={styles.container} pointerEvents="box-none">
+      <Modal
+        transparent
+        visible={visible}
+        animationType="slide"
+        onRequestClose={onClose}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.dialog}>
+            <Text style={styles.title}>بحث برقم الوصل</Text>
+            <TextInput
+              placeholder="رقم الوصل"
+              onChangeText={setReceiptNumber}
+              style={[styles.input, { marginBottom: 10 }]}
+              value={receiptNumber}
+              placeholderTextColor={"#000"}
+            />
 
-          <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => {
-                onClose();
-              }}
-            >
-              <Text style={styles.cancelText}>إلغاء</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.confirmButton,
-                {
-                  opacity:
-                    receiptNumber === undefined || receiptNumber === ""
-                      ? 0.5
-                      : 1,
-                },
-              ]}
-              onPress={onConfirm}
-              disabled={receiptNumber === undefined || receiptNumber === ""}
-            >
-              <Text style={styles.confirmText}>تأكيد</Text>
-            </TouchableOpacity>
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => {
+                  onClose();
+                }}
+              >
+                <Text style={styles.cancelText}>إلغاء</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  {
+                    opacity:
+                      receiptNumber === undefined || receiptNumber === ""
+                        ? 0.5
+                        : 1,
+                  },
+                ]}
+                onPress={onConfirm}
+                disabled={receiptNumber === undefined || receiptNumber === ""}
+              >
+                {isloadingSend ? (
+                  <ActivityIndicator color={"#fff"} size={"small"} />
+                ) : (
+                  <Text style={styles.confirmText}>تأكيد</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.2)",
     justifyContent: "center",
     alignItems: "center",
   },

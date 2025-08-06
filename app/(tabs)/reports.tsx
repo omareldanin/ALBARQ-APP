@@ -1,6 +1,7 @@
 import { ReportItem } from "@/components/Report/Report";
 import { useReports } from "@/hooks/useReports";
 import { Report, ReportsMetaData } from "@/services/getReports";
+import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/reports";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
@@ -11,6 +12,7 @@ export default function Reports() {
   const insets = useSafeAreaInsets();
   const [page, setPage] = useState(1);
   const [reportsDate, setReportsData] = useState<Report[]>([]);
+  const { theme } = useThemeStore();
 
   const {
     data: reports = {
@@ -45,7 +47,12 @@ export default function Reports() {
   }, [reports]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
+      ]}
+    >
       {isLoading && !isRefetching ? (
         <View
           style={{
@@ -70,30 +77,47 @@ export default function Reports() {
         </View>
         <View style={styles.navbarItem}></View>
       </View>
-      <FlatList
-        contentContainerStyle={{ paddingBottom: 150 }}
-        data={reportsDate}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <ReportItem report={item} />}
-        onEndReachedThreshold={0.2}
-        onEndReached={() => {
-          if (reports.pagesCount > page) {
-            setPage(page + 1);
+      {reports.data.reports.length === 0 && !isLoading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute",
+            top: "50%",
+            width: "100%",
+          }}
+        >
+          <Text style={{ fontSize: 22, marginBottom: 10 }}>☹️</Text>
+          <Text style={{ fontSize: 18, fontFamily: "Cairo" }}>
+            لا يوجد تقارير
+          </Text>
+        </View>
+      ) : null}
+      <View style={{ flex: 1, padding: 10 }}>
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 150 }}
+          data={reportsDate}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <ReportItem report={item} />}
+          onEndReachedThreshold={0.2}
+          onEndReached={() => {
+            if (reports.pagesCount > page) {
+              setPage(page + 1);
+            }
+          }}
+          ListFooterComponent={
+            isRefetching ? (
+              <ActivityIndicator size="small" color={"#a91101"} />
+            ) : null
           }
-        }}
-        ListFooterComponent={
-          isRefetching ? (
-            <ActivityIndicator size="small" color={"#a91101"} />
-          ) : null
-        }
-        style={{
-          flex: 1,
-          marginTop: 10,
-          paddingTop: 10,
-          direction: "rtl",
-          padding: 10,
-        }}
-      />
+          style={{
+            flex: 1,
+            marginTop: 10,
+            direction: "rtl",
+          }}
+        />
+      </View>
     </View>
   );
 }

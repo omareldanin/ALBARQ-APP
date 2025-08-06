@@ -1,22 +1,19 @@
 import styles from "@/styles/filter";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { I18nManager, Pressable, Text, View } from "react-native";
 import Modal from "react-native-modal";
-import ConfirmOrder from "./Confirm";
 
 interface Props {
   isVisible: boolean;
   close: () => void;
+  openAdd: () => void;
 }
 
-export const ReceiveOptions = ({ isVisible, close }: Props) => {
-  const [showAddReceiptNumber, setShowAddReceiptNumber] = useState(false);
-
+export const ReceiveOptions = ({ isVisible, close, openAdd }: Props) => {
   const router = useRouter();
   return (
-    <View style={styles.container}>
+    <View style={styles.container} pointerEvents="box-none">
       <Modal
         isVisible={isVisible}
         onBackdropPress={close}
@@ -36,6 +33,7 @@ export const ReceiveOptions = ({ isVisible, close }: Props) => {
                 fontFamily: "CairoBold",
                 color: "#a91101",
                 marginBottom: 10,
+                textAlign: I18nManager.isRTL ? "right" : "left",
               }}
             >
               استلام طلبات
@@ -44,7 +42,10 @@ export const ReceiveOptions = ({ isVisible, close }: Props) => {
           <Pressable
             style={styles.option}
             onPress={() => {
-              setShowAddReceiptNumber(true);
+              close();
+              setTimeout(() => {
+                openAdd();
+              }, 100);
             }}
           >
             <AntDesign name="pluscircleo" size={24} color="#a91101" />
@@ -65,6 +66,7 @@ export const ReceiveOptions = ({ isVisible, close }: Props) => {
                   received: "true",
                 },
               });
+              close();
             }}
           >
             <MaterialCommunityIcons
@@ -82,11 +84,6 @@ export const ReceiveOptions = ({ isVisible, close }: Props) => {
           </Pressable>
         </View>
       </Modal>
-      <ConfirmOrder
-        visible={showAddReceiptNumber}
-        onClose={() => setShowAddReceiptNumber(false)}
-        onCancel={() => close()}
-      />
     </View>
   );
 };

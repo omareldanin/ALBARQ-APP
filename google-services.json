@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:348452483262:android:d40b8cb0262fca4966aeef",
+        "mobilesdk_app_id": "1:348452483262:android:50cd1a76e6cb555d66aeef",
         "android_client_info": {
-          "package_name": "Albarq.app"
+          "package_name": "com.delivery.iq"
         }
       },
       "oauth_client": [],

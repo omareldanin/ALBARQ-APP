@@ -36,6 +36,8 @@ export interface Ticket {
       name: string;
     };
     client: {
+      showNumbers?: boolean;
+      showDeliveryNumber?: boolean;
       user: {
         id: number;
         name: string;
@@ -82,7 +84,7 @@ export interface GetTicketResponse {
 export interface TicketFilters {
   page?: number;
   size?: number;
-  status?: string;
+  status?: keyof typeof orderStatusArabicNames;
   closed?: string;
   forwarded?: string;
   userTickets?: string;
@@ -113,7 +115,7 @@ export const forwardTicketService = async (data: FormData) => {
   return response.data;
 };
 
-export const takeTicketService = async (id: number) => {
+export const takeTicketService = async (id: number | undefined) => {
   const response = await api.post("/take-ticket/" + id);
   return response.data;
 };
@@ -138,5 +140,12 @@ export const getAllTicketService = async (
       userTickets: userTickets || undefined,
     },
   });
+  return response.data;
+};
+
+export const getOneTicket = async (id: number) => {
+  const response = await api.get<{ status: string; data: Ticket }>(
+    "/ticket/" + id
+  );
   return response.data;
 };

@@ -1,4 +1,5 @@
 import { OrderSheet } from "@/lib/readExcel";
+import { useThemeStore } from "@/store/themeStore";
 
 import styles from "@/styles/ordersStyles";
 import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
@@ -11,7 +12,7 @@ interface Props {
 }
 export const SheetOrderItem = ({ order, index }: Props) => {
   const [expanded, setExpanded] = useState(true);
-
+  const { theme } = useThemeStore();
   const formatNumber = (value: string | number) => {
     return new Intl.NumberFormat("en-US").format(Number(value));
   };
@@ -22,13 +23,23 @@ export const SheetOrderItem = ({ order, index }: Props) => {
   };
 
   return (
-    <View style={[styles.order, expanded ? styles.expanded : styles.collapsed]}>
+    <View
+      style={[
+        styles.order,
+        expanded ? styles.expanded : styles.collapsed,
+        {
+          backgroundColor: theme === "dark" ? "#15202b" : "#fff",
+          borderColor: theme === "dark" ? "#31404e" : "#f7f7f7",
+        },
+      ]}
+    >
       <Pressable style={styles.head} onPress={toggleExpand}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
             style={{
               fontFamily: "Cairo",
               fontSize: 15,
+              color: theme === "dark" ? "#fff" : "#000",
             }}
           >
             {index + 1}
@@ -53,7 +64,15 @@ export const SheetOrderItem = ({ order, index }: Props) => {
         </View>
       </Pressable>
       <View style={styles.info}>
-        <View style={[styles.infoItem, styles.infoItemBorder]}>
+        <View
+          style={[
+            styles.infoItem,
+            styles.infoItemBorder,
+            {
+              borderColor: theme === "dark" ? "grey" : "#f7f7f7",
+            },
+          ]}
+        >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Entypo name="location-pin" size={24} color="#A91101" />
             <Text
@@ -61,6 +80,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               العنوان :
@@ -72,6 +92,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {order.Governorate + " - " + order.city}
@@ -79,7 +100,15 @@ export const SheetOrderItem = ({ order, index }: Props) => {
             </Text>
           </View>
         </View>
-        <View style={[styles.infoItem, styles.infoItemBorder]}>
+        <View
+          style={[
+            styles.infoItem,
+            styles.infoItemBorder,
+            {
+              borderColor: theme === "dark" ? "grey" : "#f7f7f7",
+            },
+          ]}
+        >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <FontAwesome5 name="money-bill-wave" size={18} color="#A91101" />
             <Text
@@ -87,6 +116,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               السعر الكلي :
@@ -98,6 +128,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
                 fontFamily: "CairoBold",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#fff" : "#000",
               }}
             >
               {formatNumber(order.total)}
@@ -112,6 +143,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
                 fontFamily: "Cairo",
                 fontSize: 13,
                 marginRight: 10,
+                color: theme === "dark" ? "#ccc" : "#000",
               }}
             >
               {"افتراضي"}
@@ -122,6 +154,7 @@ export const SheetOrderItem = ({ order, index }: Props) => {
               style={{
                 fontFamily: "Cairo",
                 fontSize: 13,
+                color: theme === "dark" ? "#fff" : "#000",
                 marginRight: 10,
               }}
             >

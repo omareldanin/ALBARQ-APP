@@ -21,6 +21,7 @@ interface IAuthStore extends SignInResponse {
   repositoryId: string;
   type: string;
   orderStatus: string[] | null;
+  permissions: string[] | null;
 }
 
 interface TokenPayload {
@@ -58,6 +59,7 @@ export const authStore = create<IAuthStore>()(
       repositoryId: "",
       type: "",
       orderStatus: null,
+      permissions: null,
       setAuth: (data: SignInResponse) => {
         const decodedToken = jwtDecode<TokenPayload>(data.token);
         set({
@@ -75,6 +77,7 @@ export const authStore = create<IAuthStore>()(
           repositoryId: decodedToken.repositoryId,
           type: decodedToken.type,
           orderStatus: decodedToken.orderStatus,
+          permissions: decodedToken.permissions,
           isLoggedIn: true,
         });
         AsyncStorage.setItem("token", data.token);
@@ -95,6 +98,8 @@ export const authStore = create<IAuthStore>()(
           repositoryId: "",
           type: "",
           isLoggedIn: false,
+          orderStatus: null,
+          permissions: null,
         });
         AsyncStorage.removeItem("token");
         AsyncStorage.removeItem("refreshToken");

@@ -103,128 +103,141 @@ const ConfirmStatus: React.FC<ConfirmDialogProps> = ({
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onCancel}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.dialog}>
-          <Text style={styles.title}>{title}</Text>
-          {status === "POSTPONED" ? (
-            <InlineDropdown
-              placeholder="اختر وقت التأجيل"
-              data={[
-                { label: "مؤجل غدا", value: "مؤجل غدا" },
-                { label: "مؤجل قضاء", value: "مؤجل قضاء" },
-                { label: "مؤجل ليلا", value: "مؤجل ليلا" },
-              ]}
-              onSelect={(value) => setNotes(value)}
-            />
-          ) : null}
-          {status === "RETURNED" ? (
-            <ModalDropdown
-              placeholder="اختر السبب"
-              data={[
-                { value: "لا يرد بعد المعالجة", label: "لا يرد بعد المعالجة" },
-                { value: "رفض الطلب", label: "رفض الطلب" },
-                { value: "حظر المندوب", label: "حظر المندوب" },
-                { value: "مسافر", label: "مسافر" },
-                { value: "تالف", label: "تالف" },
-                { value: "تم الوصول والرفض", label: "تم الوصول والرفض" },
-                { value: "خطأ بالعنوان", label: "خطأ بالعنوان" },
-                { value: "مستلم مسبقاً", label: "مستلم مسبقاً" },
-                { value: "خطأ بالتجهيز", label: "خطأ بالتجهيز" },
-                { value: "إلغاء الحجز", label: "إلغاء الحجز" },
-                { value: "لم يعالج الطلب", label: "لم يعالج الطلب" },
-                { value: "كاذب", label: "كاذب" },
-                { value: "مكرر", label: "مكرر" },
-              ]}
-              onSelect={(value) => setNotes(value)}
-            />
-          ) : null}
-          {status === "PROCESSING" ? (
-            <ModalDropdown
-              placeholder="اختر السبب"
-              data={[
-                { value: "لا يرد مع رسالة", label: "لا يرد مع رسالة" },
-                { value: "مغلق", label: "مغلق" },
-                { value: "نقص رقم", label: "نقص رقم" },
-                { value: "لا يمكن الاتصال به", label: "لا يمكن الاتصال به" },
-                { value: "زيادة رقم", label: "زيادة رقم" },
-                { value: "الرقم غير معرف", label: "الرقم غير معرف" },
-                { value: "غير داخل بالخدمة", label: "غير داخل بالخدمة" },
-                { value: "لم يطلب", label: "لم يطلب" },
-              ]}
-              onSelect={(value) => setNotes(value)}
-            />
-          ) : null}
-          {(role === "INQUIRY_EMPLOYEE" && status === "DELIVERED") ||
-          (role === "INQUIRY_EMPLOYEE" && status === "REPLACED") ||
-          (role === "INQUIRY_EMPLOYEE" && status === "PARTIALLY_RETURNED") ? (
-            <TextInput
-              placeholder="المبلغ المستلم"
-              onChangeText={setPaidAmount}
-              style={[styles.input, { marginBottom: 10 }]}
-              value={paidAmount}
-              placeholderTextColor={"#000"}
-            />
-          ) : null}
-          {status !== "POSTPONED" &&
-          status !== "RETURNED" &&
-          status !== "PROCESSING" ? (
-            <TextInput
-              placeholder="ملاحظات"
-              onChangeText={setNotes}
-              style={[styles.input]}
-              value={notes}
-              placeholderTextColor={"#000"}
-            />
-          ) : null}
-          <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => {
-                onClose();
-                setNotes("");
-              }}
-            >
-              <Text style={styles.cancelText}>إلغاء</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.confirmButton,
-                {
-                  opacity:
-                    (status === "POSTPONED" && notes === "") ||
-                    (status === "RETURNED" && notes === "") ||
-                    (status === "PROCESSING" && notes === "")
-                      ? 0.5
-                      : 1,
-                },
-              ]}
-              onPress={onConfirm}
-              disabled={
-                (status === "POSTPONED" && notes === "") ||
-                (status === "RETURNED" && notes === "") ||
-                (status === "PROCESSING" && notes === "")
-              }
-            >
-              {isloadingSend ? (
-                <ActivityIndicator size={"small"} color={"#fff"} />
-              ) : (
-                <Text style={styles.confirmText}>تأكيد</Text>
-              )}
-            </TouchableOpacity>
+    <View style={styles.container} pointerEvents="box-none">
+      <Modal
+        transparent
+        visible={visible}
+        animationType="fade"
+        onRequestClose={onCancel}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.dialog}>
+            <Text style={styles.title}>{title}</Text>
+            {status === "POSTPONED" ? (
+              <InlineDropdown
+                placeholder="اختر وقت التأجيل"
+                data={[
+                  { label: "مؤجل غدا", value: "مؤجل غدا" },
+                  { label: "مؤجل قضاء", value: "مؤجل قضاء" },
+                  { label: "مؤجل ليلا", value: "مؤجل ليلا" },
+                ]}
+                onSelect={(value) => setNotes(value)}
+              />
+            ) : null}
+            {status === "RETURNED" ? (
+              <ModalDropdown
+                placeholder="اختر السبب"
+                data={[
+                  {
+                    value: "لا يرد بعد المعالجة",
+                    label: "لا يرد بعد المعالجة",
+                  },
+                  { value: "رفض الطلب", label: "رفض الطلب" },
+                  { value: "حظر المندوب", label: "حظر المندوب" },
+                  { value: "مسافر", label: "مسافر" },
+                  { value: "تالف", label: "تالف" },
+                  { value: "تم الوصول والرفض", label: "تم الوصول والرفض" },
+                  { value: "خطأ بالعنوان", label: "خطأ بالعنوان" },
+                  { value: "مستلم مسبقاً", label: "مستلم مسبقاً" },
+                  { value: "خطأ بالتجهيز", label: "خطأ بالتجهيز" },
+                  { value: "إلغاء الحجز", label: "إلغاء الحجز" },
+                  { value: "لم يعالج الطلب", label: "لم يعالج الطلب" },
+                  { value: "كاذب", label: "كاذب" },
+                  { value: "مكرر", label: "مكرر" },
+                ]}
+                onSelect={(value) => setNotes(value)}
+              />
+            ) : null}
+            {status === "PROCESSING" ? (
+              <ModalDropdown
+                placeholder="اختر السبب"
+                data={[
+                  { value: "لا يرد مع رسالة", label: "لا يرد مع رسالة" },
+                  { value: "مغلق", label: "مغلق" },
+                  { value: "نقص رقم", label: "نقص رقم" },
+                  { value: "لا يمكن الاتصال به", label: "لا يمكن الاتصال به" },
+                  { value: "زيادة رقم", label: "زيادة رقم" },
+                  { value: "الرقم غير معرف", label: "الرقم غير معرف" },
+                  { value: "غير داخل بالخدمة", label: "غير داخل بالخدمة" },
+                  { value: "لم يطلب", label: "لم يطلب" },
+                  { value: "تعديل سعر", label: "تعديل سعر" },
+                ]}
+                onSelect={(value) => setNotes(value)}
+              />
+            ) : null}
+            {(role === "INQUIRY_EMPLOYEE" && status === "DELIVERED") ||
+            (role === "INQUIRY_EMPLOYEE" && status === "REPLACED") ||
+            (role === "INQUIRY_EMPLOYEE" && status === "PARTIALLY_RETURNED") ? (
+              <TextInput
+                placeholder="المبلغ المستلم"
+                onChangeText={setPaidAmount}
+                style={[styles.input, { marginBottom: 10 }]}
+                value={paidAmount}
+                placeholderTextColor={"#000"}
+              />
+            ) : null}
+            {status !== "POSTPONED" &&
+            status !== "RETURNED" &&
+            status !== "PROCESSING" ? (
+              <TextInput
+                placeholder="ملاحظات"
+                onChangeText={setNotes}
+                style={[styles.input]}
+                value={notes}
+                placeholderTextColor={"#000"}
+              />
+            ) : null}
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => {
+                  onClose();
+                  setNotes("");
+                }}
+              >
+                <Text style={styles.cancelText}>إلغاء</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  {
+                    opacity:
+                      (status === "POSTPONED" && notes === "") ||
+                      (status === "RETURNED" && notes === "") ||
+                      (status === "PROCESSING" && notes === "")
+                        ? 0.5
+                        : 1,
+                  },
+                ]}
+                onPress={onConfirm}
+                disabled={
+                  (status === "POSTPONED" && notes === "") ||
+                  (status === "RETURNED" && notes === "") ||
+                  (status === "PROCESSING" && notes === "")
+                }
+              >
+                {isloadingSend ? (
+                  <ActivityIndicator size={"small"} color={"#fff"} />
+                ) : (
+                  <Text style={styles.confirmText}>تأكيد</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",

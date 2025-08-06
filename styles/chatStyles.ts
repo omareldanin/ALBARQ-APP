@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { I18nManager, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -6,6 +6,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     maxHeight: "100%",
     paddingBottom: 0,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fullImage: {
+    width: "90%",
+    height: "80%",
   },
   navbar: {
     backgroundColor: "#A91101",
@@ -60,9 +70,8 @@ const styles = StyleSheet.create({
   form: {
     flexDirection: "row",
     alignItems: "flex-end",
-    gap: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
+    gap: 5,
+    direction: "rtl",
   },
   inputContainer: {
     flexGrow: 1,
@@ -77,6 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     transitionDuration: "300ms",
     paddingLeft: 30,
+    paddingRight: 10,
   },
   inputFocused: {
     borderColor: "#A91101",
@@ -105,7 +115,7 @@ const styles = StyleSheet.create({
   },
   camera: {
     position: "absolute",
-    left: 10,
+    [!I18nManager.isRTL ? "left" : "right"]: 10,
     top: 12,
     zIndex: 555,
   },
@@ -118,6 +128,37 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: "#f7f7f7",
     padding: 20,
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 10,
+    paddingBottom: 0,
+    gap: 10,
+    direction: "rtl",
+  },
+  active: {
+    borderColor: "#A91101",
+    backgroundColor: "#fff",
+    color: "#A91101",
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "grey",
+    fontSize: 12,
+    fontFamily: "CairoBold",
+  },
+  filterButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    // padding: 13,
+    backgroundColor: "#fff",
+    textAlign: "center",
+    borderColor: "#f7f7f7",
+    borderWidth: 1,
+    height: 45,
   },
 });
 export default styles;
