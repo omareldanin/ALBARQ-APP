@@ -139,11 +139,11 @@ export interface GetReportsResponse {
 }
 
 export interface ReportsFilters {
-  page?: number;
+  page: number;
   size?: number;
-  start_date?: Date | string | null;
+  start_date?: Date | null;
   sort?: string;
-  end_date?: Date | string | null;
+  end_date?: Date | null;
   client_id?: string;
   store_id?: string;
   governorate?: string;

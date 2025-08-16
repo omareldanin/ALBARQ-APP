@@ -38,8 +38,7 @@ export default function NotificationsScreen() {
       style={[
         styles.container,
         { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-      ]}
-    >
+      ]}>
       <StatusBar translucent backgroundColor={"transparent"} />
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
@@ -47,8 +46,7 @@ export default function NotificationsScreen() {
             <Feather name="arrow-right-circle" size={25} color="#fff" />
           </Pressable>
           <Text
-            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}
-          >
+            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}>
             الاشعارات
           </Text>
         </View>
@@ -62,8 +60,7 @@ export default function NotificationsScreen() {
         style={[
           styles.buttonsContainer,
           { paddingHorizontal: 10, direction: "rtl" },
-        ]}
-      >
+        ]}>
         <Pressable
           style={[
             styles.filterButton,
@@ -80,8 +77,7 @@ export default function NotificationsScreen() {
           onPress={() => {
             setPage(1);
             setUnRead(false);
-          }}
-        >
+          }}>
           <Text
             style={[
               styles.buttonText,
@@ -90,8 +86,7 @@ export default function NotificationsScreen() {
                 color: "grey",
               },
               !unRead ? styles.active : null,
-            ]}
-          >
+            ]}>
             الكل
           </Text>
         </Pressable>
@@ -112,8 +107,7 @@ export default function NotificationsScreen() {
             setPage(1);
 
             setUnRead(true);
-          }}
-        >
+          }}>
           <Text
             style={[
               styles.buttonText,
@@ -122,8 +116,7 @@ export default function NotificationsScreen() {
                 color: "grey",
               },
               unRead ? styles.active : null,
-            ]}
-          >
+            ]}>
             غير مقروء
           </Text>
         </Pressable>
@@ -154,15 +147,14 @@ export default function NotificationsScreen() {
                     },
                   });
                 }
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontFamily: "Cairo",
                   fontSize: 13,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                  textAlign: "left",
+                }}>
                 {item.title}
               </Text>
               {!item.seen ? <Text style={styles.seen}></Text> : null}

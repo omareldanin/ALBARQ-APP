@@ -79,3 +79,10 @@ export const sendMessageService = async (data: FormData) => {
   });
   return response.data;
 };
+
+export const updateMessagesSeenService = async () => {
+  const response = await api.patch("/chats/markAllSeen", {
+    seen: true,
+  });
+  return response.data;
+};

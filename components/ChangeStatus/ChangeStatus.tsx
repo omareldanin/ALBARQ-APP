@@ -29,15 +29,13 @@ export const ChangeStatus = ({ isVisible, close, showConfirm }: Props) => {
         backdropOpacity={0.4}
         backdropTransitionOutTiming={0} // prevent flicker on close
         animationIn="slideInUp"
-        animationOut="slideOutDown"
-      >
+        animationOut="slideOutDown">
         <ScrollView
           style={[
-            styles.modalContent,
+            styles.statusModel,
             { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
           ]}
-          contentContainerStyle={{ paddingBottom: 100 }}
-        >
+          contentContainerStyle={{ paddingBottom: 100 }}>
           <View>
             <Text
               style={{
@@ -45,8 +43,7 @@ export const ChangeStatus = ({ isVisible, close, showConfirm }: Props) => {
                 color: "#a91101",
                 marginBottom: 20,
                 textAlign: "center",
-              }}
-            >
+              }}>
               تغيير الحاله
             </Text>
           </View>
@@ -68,14 +65,12 @@ export const ChangeStatus = ({ isVisible, close, showConfirm }: Props) => {
                 setTimeout(() => {
                   showConfirm(status);
                 }, 100);
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontFamily: "CairoBold",
                   color: "#fff",
-                }}
-              >
+                }}>
                 {
                   orderStatusArabicNames[
                     status as keyof typeof orderStatusArabicNames

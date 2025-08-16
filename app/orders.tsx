@@ -40,7 +40,7 @@ export const ordersFilterInitialState: OrdersFilter = {
   delivery_agent_id: "",
   delivery_date: null,
   delivery_type: "",
-  end_date: "",
+  end_date: undefined,
   governorate: "",
   location_id: "",
   pagesCount: 0,
@@ -51,7 +51,7 @@ export const ordersFilterInitialState: OrdersFilter = {
   recipient_phone: "",
   search: "",
   sort: "",
-  start_date: "",
+  start_date: undefined,
   statuses: [],
   status: "",
   store_id: "",
@@ -176,8 +176,7 @@ export default function Orders() {
       style={[
         styles.container,
         { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-      ]}
-    >
+      ]}>
       <StatusBar translucent backgroundColor={"transparent"} />
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
@@ -185,16 +184,14 @@ export default function Orders() {
             <Feather name="arrow-right-circle" size={25} color="#fff" />
           </Pressable>
           <Text
-            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}
-          >
-            الطلبات
+            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}>
+            الطلبات - {orders.data.ordersMetaData.count}
           </Text>
         </View>
         <View style={styles.navbarItem}>
           <Pressable
             style={styles.navbarItem}
-            onPress={() => router.navigate("/barcode")}
-          >
+            onPress={() => router.navigate("/barcode")}>
             <MaterialCommunityIcons name="qrcode-scan" size={24} color="#fff" />
           </Pressable>
           <Pressable style={styles.bell} onPress={() => setOpenFilters(true)}>
@@ -211,8 +208,7 @@ export default function Orders() {
             position: "absolute",
             top: "50%",
             width: "100%",
-          }}
-        >
+          }}>
           <Fold size={50} color="#A91101" />
         </View>
       ) : null}
@@ -225,8 +221,7 @@ export default function Orders() {
             position: "absolute",
             top: "50%",
             width: "100%",
-          }}
-        >
+          }}>
           <Text style={{ fontSize: 22, marginBottom: 10 }}>☹️</Text>
           <Text style={{ fontSize: 18, fontFamily: "Cairo" }}>
             لا يوجد طلبات
@@ -238,8 +233,7 @@ export default function Orders() {
           style={[
             styles.buttonsContainer,
             { marginTop: 10, padding: 10, paddingBottom: 0, direction: "rtl" },
-          ]}
-        >
+          ]}>
           <Pressable
             style={styles.button}
             onPress={() => {
@@ -248,8 +242,7 @@ export default function Orders() {
               } else {
                 setSelectedOrder(ordersDate.map((o) => o.id));
               }
-            }}
-          >
+            }}>
             <Text style={[styles.buttonText, { color: "#000" }]}>
               تحديد الكل
               {selectedOrder.length > 0
@@ -269,8 +262,7 @@ export default function Orders() {
               disabled={selectedOrder.length === 0 || isloadingPrint}
               onPress={() => {
                 printOrders();
-              }}
-            >
+              }}>
               {isloadingPrint ? (
                 <Flow size={40} color="#fff" style={{ margin: "auto" }} />
               ) : (
@@ -289,8 +281,7 @@ export default function Orders() {
               disabled={selectedOrder.length === 0 || isloadingSend}
               onPress={() => {
                 sendOrders();
-              }}
-            >
+              }}>
               {isloadingSend ? (
                 <Flow size={40} color="#fff" style={{ margin: "auto" }} />
               ) : (
@@ -351,8 +342,7 @@ export default function Orders() {
       (role === "CLIENT_ASSISTANT" && permissions?.includes("MESSAGES")) ? (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={() => router.navigate("/chats")}
-        >
+          onPress={() => router.navigate("/chats")}>
           {totalUnSeened > 0 ? (
             <Text style={styles.totalUnseen}>
               {totalUnSeened > 99 ? "+99" : totalUnSeened}

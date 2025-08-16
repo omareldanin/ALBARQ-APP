@@ -123,8 +123,7 @@ export default function StatusStatics() {
         styles.container,
         { paddingBottom: insets.bottom },
         { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-      ]}
-    >
+      ]}>
       <StatusBar translucent backgroundColor={"transparent"} />
 
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
@@ -133,8 +132,7 @@ export default function StatusStatics() {
             <Feather name="arrow-right-circle" size={25} color="#fff" />
           </Pressable>
           <Text
-            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 17 }}
-          >
+            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 17 }}>
             طلب رقم {"  -  " + order?.data.receiptNumber}
           </Text>
         </View>
@@ -149,8 +147,7 @@ export default function StatusStatics() {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setShowChangeProcessing(true)}
-            >
+              onPress={() => setShowChangeProcessing(true)}>
               {order?.data.processingStatus === "not_processed" ? (
                 <Ionicons name="close-sharp" size={24} color="red" />
               ) : order?.data.processingStatus === "processed" ? (
@@ -171,8 +168,7 @@ export default function StatusStatics() {
         style={[
           styles.buttonsContainer,
           { padding: 10, paddingTop: 0, marginBottom: 0, direction: "rtl" },
-        ]}
-      >
+        ]}>
         <Pressable
           style={[
             styles.button,
@@ -186,16 +182,14 @@ export default function StatusStatics() {
                   : "#f7f7f7",
             },
           ]}
-          onPress={() => setShowDetails(true)}
-        >
+          onPress={() => setShowDetails(true)}>
           <Text
             style={[
               styles.buttonText,
               { color: "grey" },
               showDetails ? styles.active : null,
               { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
-            ]}
-          >
+            ]}>
             تفاصيل الطلب
           </Text>
         </Pressable>
@@ -212,16 +206,14 @@ export default function StatusStatics() {
                   : "#f7f7f7",
             },
           ]}
-          onPress={() => setShowDetails(false)}
-        >
+          onPress={() => setShowDetails(false)}>
           <Text
             style={[
               styles.buttonText,
               { color: "grey" },
               !showDetails ? styles.active : null,
               { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
-            ]}
-          >
+            ]}>
             تتبع الطلب
           </Text>
         </Pressable>
@@ -235,8 +227,7 @@ export default function StatusStatics() {
             position: "absolute",
             top: "50%",
             width: "100%",
-          }}
-        >
+          }}>
           <Fold size={50} color="#A91101" />
         </View>
       ) : isError ? (
@@ -248,8 +239,7 @@ export default function StatusStatics() {
             position: "absolute",
             top: "50%",
             width: "100%",
-          }}
-        >
+          }}>
           <Text>حدث خطأ ما</Text>
         </View>
       ) : (
@@ -258,8 +248,7 @@ export default function StatusStatics() {
             <View style={{ flex: 1, padding: 20 }}>
               <ScrollView
                 style={styles.orderDetails}
-                contentContainerStyle={{ paddingBottom: 100 }}
-              >
+                contentContainerStyle={{ paddingBottom: 100 }}>
                 <View
                   style={[
                     styles.orderHead,
@@ -268,16 +257,14 @@ export default function StatusStatics() {
                       borderBottomWidth: 1,
                       marginBottom: 10,
                     },
-                  ]}
-                >
+                  ]}>
                   <View style={styles.orderItem}>
                     <Text
                       style={{
                         fontFamily: "Cairo",
                         fontSize: 13,
                         color: theme === "dark" ? "#ccc" : "grey",
-                      }}
-                    >
+                      }}>
                       الحاله :
                     </Text>
                     <Text
@@ -288,8 +275,7 @@ export default function StatusStatics() {
                           orderStatusColors[
                             order?.data.status as keyof typeof orderStatusColors
                           ],
-                      }}
-                    >
+                      }}>
                       {order?.data.formedStatus}
                     </Text>
                   </View>
@@ -299,8 +285,7 @@ export default function StatusStatics() {
                         fontFamily: "Cairo",
                         fontSize: 13,
                         color: theme === "dark" ? "#ccc" : "grey",
-                      }}
-                    >
+                      }}>
                       التاريخ :
                     </Text>
                     <Text
@@ -308,8 +293,7 @@ export default function StatusStatics() {
                         fontFamily: "CairoBold",
                         fontSize: 12,
                         color: theme === "dark" ? "#fff" : "#000",
-                      }}
-                    >
+                      }}>
                       {formatDate(order?.data.createdAt)}
                     </Text>
                   </View>
@@ -319,8 +303,7 @@ export default function StatusStatics() {
                         fontFamily: "Cairo",
                         fontSize: 13,
                         color: theme === "dark" ? "#ccc" : "grey",
-                      }}
-                    >
+                      }}>
                       السعر الكلي :
                     </Text>
                     <Text
@@ -328,8 +311,7 @@ export default function StatusStatics() {
                         fontFamily: "CairoBold",
                         fontSize: 13,
                         color: theme === "dark" ? "#fff" : "#000",
-                      }}
-                    >
+                      }}>
                       {formatNumber(order?.data.totalCost)}
                     </Text>
                   </View>
@@ -340,8 +322,7 @@ export default function StatusStatics() {
                       fontFamily: "Cairo",
                       fontSize: 13,
                       color: theme === "dark" ? "#ccc" : "grey",
-                    }}
-                  >
+                    }}>
                     اسم المستلم :
                   </Text>
                   <Text
@@ -349,8 +330,7 @@ export default function StatusStatics() {
                       fontFamily: "CairoBold",
                       fontSize: 11,
                       color: theme === "dark" ? "#fff" : "#000",
-                    }}
-                  >
+                    }}>
                     {order?.data.recipientName || "لا يوجد"}
                   </Text>
                 </View>
@@ -363,15 +343,13 @@ export default function StatusStatics() {
                       marginBottom: 10,
                       paddingBottom: 10,
                     },
-                  ]}
-                >
+                  ]}>
                   <Text
                     style={{
                       fontFamily: "Cairo",
                       fontSize: 13,
                       color: theme === "dark" ? "#ccc" : "grey",
-                    }}
-                  >
+                    }}>
                     رقم الهاتف :
                   </Text>
                   <View
@@ -379,22 +357,19 @@ export default function StatusStatics() {
                       flexDirection: "row",
                       alignItems: "center",
                       gap: 20,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontFamily: "CairoBold",
                         fontSize: 13,
                         color: theme === "dark" ? "#fff" : "#000",
-                      }}
-                    >
+                      }}>
                       {order?.data.recipientPhones[0]}
                     </Text>
                     <Pressable
                       onPress={() =>
                         Linking.openURL(`tel:${order?.data.recipientPhones[0]}`)
-                      }
-                    >
+                      }>
                       <Feather
                         name="phone"
                         size={20}
@@ -415,8 +390,7 @@ export default function StatusStatics() {
                         if (link) {
                           Linking.openURL(link);
                         }
-                      }}
-                    >
+                      }}>
                       <FontAwesome
                         name="whatsapp"
                         size={22}
@@ -431,8 +405,7 @@ export default function StatusStatics() {
                       fontFamily: "Cairo",
                       fontSize: 13,
                       color: theme === "dark" ? "#ccc" : "grey",
-                    }}
-                  >
+                    }}>
                     العنوان :
                   </Text>
                   <Text
@@ -440,8 +413,7 @@ export default function StatusStatics() {
                       fontFamily: "CairoBold",
                       fontSize: 11,
                       color: theme === "dark" ? "#fff" : "#000",
-                    }}
-                  >
+                    }}>
                     {governorateArabicNames[
                       order?.data
                         .governorate as keyof typeof governorateArabicNames
@@ -459,8 +431,7 @@ export default function StatusStatics() {
                       fontFamily: "Cairo",
                       fontSize: 13,
                       color: theme === "dark" ? "#ccc" : "grey",
-                    }}
-                  >
+                    }}>
                     ملاحظات :
                   </Text>
                   <Text
@@ -468,8 +439,7 @@ export default function StatusStatics() {
                       fontFamily: "CairoBold",
                       fontSize: 11,
                       color: theme === "dark" ? "#fff" : "#000",
-                    }}
-                  >
+                    }}>
                     {order?.data.notes || "لا يوجد"}
                   </Text>
                 </View>
@@ -481,15 +451,13 @@ export default function StatusStatics() {
                       borderBottomWidth: 1,
                       paddingBottom: 12,
                     },
-                  ]}
-                >
+                  ]}>
                   <Text
                     style={{
                       fontFamily: "Cairo",
                       fontSize: 13,
                       color: theme === "dark" ? "#ccc" : "grey",
-                    }}
-                  >
+                    }}>
                     تفاصيل :
                   </Text>
                   <Text
@@ -497,8 +465,7 @@ export default function StatusStatics() {
                       fontFamily: "CairoBold",
                       fontSize: 11,
                       color: theme === "dark" ? "#fff" : "#000",
-                    }}
-                  >
+                    }}>
                     {order?.data.details || "لا يوجد"}
                   </Text>
                 </View>
@@ -516,15 +483,13 @@ export default function StatusStatics() {
                               borderBottomWidth: 1,
                               paddingBottom: 12,
                             },
-                      ]}
-                    >
+                      ]}>
                       <Text
                         style={{
                           fontFamily: "Cairo",
                           fontSize: 13,
                           color: theme === "dark" ? "#ccc" : "grey",
-                        }}
-                      >
+                        }}>
                         العميل :
                       </Text>
                       <Text
@@ -532,8 +497,7 @@ export default function StatusStatics() {
                           fontFamily: "CairoBold",
                           fontSize: 11,
                           color: theme === "dark" ? "#fff" : "#000",
-                        }}
-                      >
+                        }}>
                         {order?.data.client?.name +
                           " | " +
                           order?.data.store.name}
@@ -547,15 +511,13 @@ export default function StatusStatics() {
                           borderBottomWidth: 1,
                           paddingBottom: 12,
                         },
-                      ]}
-                    >
+                      ]}>
                       <Text
                         style={{
                           fontFamily: "Cairo",
                           fontSize: 13,
                           color: theme === "dark" ? "#ccc" : "grey",
-                        }}
-                      >
+                        }}>
                         رقم الهاتف :
                       </Text>
                       <View
@@ -563,22 +525,19 @@ export default function StatusStatics() {
                           flexDirection: "row",
                           alignItems: "center",
                           gap: 20,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
                             fontFamily: "CairoBold",
                             fontSize: 13,
                             color: theme === "dark" ? "#fff" : "#000",
-                          }}
-                        >
+                          }}>
                           {order?.data.client?.phone}
                         </Text>
                         <Pressable
                           onPress={() =>
                             Linking.openURL(`tel:${order?.data.client?.phone}`)
-                          }
-                        >
+                          }>
                           <Feather
                             name="phone"
                             size={20}
@@ -601,8 +560,7 @@ export default function StatusStatics() {
                             if (link) {
                               Linking.openURL(link);
                             }
-                          }}
-                        >
+                          }}>
                           <FontAwesome
                             name="whatsapp"
                             size={22}
@@ -628,15 +586,13 @@ export default function StatusStatics() {
                               borderBottomWidth: 1,
                               paddingBottom: 12,
                             },
-                      ]}
-                    >
+                      ]}>
                       <Text
                         style={{
                           fontFamily: "Cairo",
                           fontSize: 13,
                           color: theme === "dark" ? "#ccc" : "grey",
-                        }}
-                      >
+                        }}>
                         المندوب :
                       </Text>
                       <Text
@@ -644,8 +600,7 @@ export default function StatusStatics() {
                           fontFamily: "CairoBold",
                           fontSize: 11,
                           color: theme === "dark" ? "#fff" : "#000",
-                        }}
-                      >
+                        }}>
                         {order?.data.deliveryAgent?.name}
                       </Text>
                     </View>
@@ -657,15 +612,13 @@ export default function StatusStatics() {
                           borderBottomWidth: 1,
                           paddingBottom: 12,
                         },
-                      ]}
-                    >
+                      ]}>
                       <Text
                         style={{
                           fontFamily: "Cairo",
                           fontSize: 13,
                           color: theme === "dark" ? "#ccc" : "grey",
-                        }}
-                      >
+                        }}>
                         رقم الهاتف :
                       </Text>
                       <View
@@ -673,15 +626,13 @@ export default function StatusStatics() {
                           flexDirection: "row",
                           alignItems: "center",
                           gap: 20,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
                             fontFamily: "CairoBold",
                             fontSize: 13,
                             color: theme === "dark" ? "#fff" : "#000",
-                          }}
-                        >
+                          }}>
                           {order?.data.deliveryAgent?.phone}
                         </Text>
                         <Pressable
@@ -689,8 +640,7 @@ export default function StatusStatics() {
                             Linking.openURL(
                               `tel:${order?.data.deliveryAgent?.phone}`
                             )
-                          }
-                        >
+                          }>
                           <Feather
                             name="phone"
                             size={20}
@@ -712,8 +662,7 @@ export default function StatusStatics() {
                                 message
                               ) || ""
                             );
-                          }}
-                        >
+                          }}>
                           <FontAwesome
                             name="whatsapp"
                             size={22}
@@ -738,8 +687,7 @@ export default function StatusStatics() {
                             fontFamily: "Cairo",
                             fontSize: 13,
                             color: theme === "dark" ? "#ccc" : "grey",
-                          }}
-                        >
+                          }}>
                           اسم الموظف :
                         </Text>
                         <Text
@@ -747,8 +695,7 @@ export default function StatusStatics() {
                             fontFamily: "CairoBold",
                             fontSize: 11,
                             color: theme === "dark" ? "#fff" : "#000",
-                          }}
-                        >
+                          }}>
                           {employee.name}
                         </Text>
                       </View>
@@ -761,15 +708,13 @@ export default function StatusStatics() {
                             borderBottomWidth: 1,
                             paddingBottom: 12,
                           },
-                        ]}
-                      >
+                        ]}>
                         <Text
                           style={{
                             fontFamily: "Cairo",
                             fontSize: 13,
                             color: theme === "dark" ? "#ccc" : "grey",
-                          }}
-                        >
+                          }}>
                           رقم الهاتف :
                         </Text>
                         <View
@@ -777,22 +722,19 @@ export default function StatusStatics() {
                             flexDirection: "row",
                             alignItems: "center",
                             gap: 20,
-                          }}
-                        >
+                          }}>
                           <Text
                             style={{
                               fontFamily: "CairoBold",
                               fontSize: 13,
                               color: theme === "dark" ? "#fff" : "#000",
-                            }}
-                          >
+                            }}>
                             {employee?.phone}
                           </Text>
                           <Pressable
                             onPress={() =>
                               Linking.openURL(`tel:${employee?.phone}`)
-                            }
-                          >
+                            }>
                             <Feather
                               name="phone"
                               size={20}
@@ -814,8 +756,7 @@ export default function StatusStatics() {
                                   message
                                 ) || ""
                               );
-                            }}
-                          >
+                            }}>
                             <FontAwesome
                               name="whatsapp"
                               size={22}
@@ -833,8 +774,7 @@ export default function StatusStatics() {
             <View style={{ flex: 1, padding: 20 }}>
               <ScrollView
                 style={styles.orderTimeLine}
-                contentContainerStyle={{ paddingBottom: 100 }}
-              >
+                contentContainerStyle={{ paddingBottom: 100 }}>
                 {order?.orderTimeline.map((item, index) => {
                   return (
                     <View key={item.id} style={styles.orderTimeLineItem}>
@@ -843,8 +783,7 @@ export default function StatusStatics() {
                           styles.orderTimeLineItemText,
                           { color: theme === "dark" ? "red" : "#a91101" },
                         ]}
-                        allowFontScaling={false}
-                      >
+                        allowFontScaling={false}>
                         {item.message}
                       </Text>
                       <Text
@@ -852,8 +791,7 @@ export default function StatusStatics() {
                           fontSize: 12,
                           color: theme === "dark" ? "#ccc" : "grey",
                           marginBottom: 10,
-                        }}
-                      >
+                        }}>
                         بواسطه : {item.by.name}
                       </Text>
                       {index + 1 === order.orderTimeline.length ? null : (
@@ -883,8 +821,7 @@ export default function StatusStatics() {
                     orderId: order?.data.id,
                   },
                 })
-              }
-            >
+              }>
               <Ionicons name="chatbubble-ellipses" size={24} color="white" />
             </TouchableOpacity>
           ) : null}
@@ -892,16 +829,14 @@ export default function StatusStatics() {
             style={[
               styles.total,
               { borderColor: theme === "dark" ? "#15202b" : "#f7f7f7" },
-            ]}
-          >
+            ]}>
             <View style={[styles.orderItem]}>
               <Text
                 style={{
                   fontFamily: "Cairo",
                   fontSize: 13,
                   color: theme === "dark" ? "#ccc" : "grey",
-                }}
-              >
+                }}>
                 رسوم التوصيل :
               </Text>
               <Text
@@ -909,8 +844,7 @@ export default function StatusStatics() {
                   fontFamily: "CairoBold",
                   fontSize: 11,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                }}>
                 {formatNumber(order?.data.deliveryCost + "")} د
               </Text>
             </View>
@@ -922,15 +856,13 @@ export default function StatusStatics() {
                   borderColor: theme === "dark" ? "#15202b" : "#f7f7f7",
                   paddingBottom: 10,
                 },
-              ]}
-            >
+              ]}>
               <Text
                 style={{
                   fontFamily: "Cairo",
                   fontSize: 13,
                   color: theme === "dark" ? "#ccc" : "grey",
-                }}
-              >
+                }}>
                 المبلغ المستلم :
               </Text>
               <Text
@@ -938,8 +870,7 @@ export default function StatusStatics() {
                   fontFamily: "CairoBold",
                   fontSize: 11,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                }}>
                 {formatNumber(order?.data.paidAmount)} د
               </Text>
             </View>
@@ -949,8 +880,7 @@ export default function StatusStatics() {
                   fontFamily: "Cairo",
                   fontSize: 13,
                   color: theme === "dark" ? "#ccc" : "grey",
-                }}
-              >
+                }}>
                 صافي العميل :
               </Text>
               <Text
@@ -958,13 +888,14 @@ export default function StatusStatics() {
                   fontFamily: "CairoBold",
                   fontSize: 11,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                }}>
                 {formatNumber(order?.data.clientNet)} د
               </Text>
             </View>
             <View style={styles.buttonsContainer}>
-              {role === "DELIVERY_AGENT" || role === "INQUIRY_EMPLOYEE" ? (
+              {(role === "DELIVERY_AGENT" &&
+                order?.data.status !== "DELIVERED") ||
+              role === "INQUIRY_EMPLOYEE" ? (
                 <Pressable
                   style={{
                     backgroundColor: "#a91101",
@@ -972,11 +903,12 @@ export default function StatusStatics() {
                     borderRadius: 5,
                     flex: 1,
                   }}
-                  onPress={() => setShowChangeModel(true)}
-                >
+                  onPress={() => setShowChangeModel(true)}>
                   <Text
-                    style={[styles.buttonText, { color: "#fff", fontSize: 15 }]}
-                  >
+                    style={[
+                      styles.buttonText,
+                      { color: "#fff", fontSize: 15 },
+                    ]}>
                     تغير الحاله
                   </Text>
                 </Pressable>

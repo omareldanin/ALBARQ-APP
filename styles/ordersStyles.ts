@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   active: {
     borderColor: "#A91101",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     color: "#A91101",
   },
   controlsContainers: {

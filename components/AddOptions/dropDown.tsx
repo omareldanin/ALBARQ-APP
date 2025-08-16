@@ -46,12 +46,11 @@ export default function NativeSearchableSelect({
         style={[
           styles.selectBox,
           {
-            backgroundColor: theme === "dark" ? "#31404e" : "#fff",
-            borderColor: theme === "dark" ? "grey" : "#f7f7f7",
+            backgroundColor: theme === "dark" ? "#fff" : "#fff",
+            borderColor: theme === "dark" ? "grey" : "#ccc",
           },
         ]}
-        onPress={() => setModalVisible(true)}
-      >
+        onPress={() => setModalVisible(true)}>
         <Text
           style={[
             styles.selectText,
@@ -63,8 +62,7 @@ export default function NativeSearchableSelect({
                     ? "#000"
                     : "#999",
             },
-          ]}
-        >
+          ]}>
           {value || label}
         </Text>
       </Pressable>
@@ -72,13 +70,12 @@ export default function NativeSearchableSelect({
         <Pressable
           style={{
             position: "absolute",
-            [!I18nManager.isRTL ? "left" : "right"]: 0,
+            [!I18nManager.isRTL ? "left" : "right"]: 10,
             top: 12,
             zIndex: 1000,
             width: 40,
           }}
-          onPress={() => setValue("")}
-        >
+          onPress={() => setValue("")}>
           <Feather name="x" size={24} color="grey" />
         </Pressable>
       ) : null}
@@ -89,8 +86,7 @@ export default function NativeSearchableSelect({
             style={[
               styles.modalContent,
               { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-            ]}
-          >
+            ]}>
             <TextInput
               placeholder="ابحث..."
               value={search}
@@ -116,8 +112,7 @@ export default function NativeSearchableSelect({
                       borderBottomColor: theme === "dark" ? "#15202b" : "#eee",
                     },
                   ]}
-                  onPress={() => handleSelect(item.value, item.label)}
-                >
+                  onPress={() => handleSelect(item.value, item.label)}>
                   <Text style={{ color: theme === "dark" ? "#ccc" : "grey" }}>
                     {item.label}
                   </Text>
@@ -127,8 +122,7 @@ export default function NativeSearchableSelect({
             />
             <Pressable
               onPress={() => setModalVisible(false)}
-              style={styles.closeBtn}
-            >
+              style={styles.closeBtn}>
               <Text style={styles.closeText}>الغاء</Text>
             </Pressable>
           </View>

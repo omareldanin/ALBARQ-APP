@@ -2,7 +2,7 @@ import { useChatStore } from "@/store/chatStore";
 import { getSocket } from "@/store/socket";
 import { useThemeStore } from "@/store/themeStore";
 import styles from "@/styles/chatStyles";
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import "dayjs/locale/ar"; // Import Arabic locale
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -27,8 +27,15 @@ export default function ChatScreen() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [unRead, setUnRead] = useState(false);
-  const { chats, fetchChats, refreshChats, loading, pageCounts, markChatSeen } =
-    useChatStore();
+  const {
+    chats,
+    fetchChats,
+    refreshChats,
+    loading,
+    pageCounts,
+    markChatSeen,
+    markAllAsSeen,
+  } = useChatStore();
 
   useEffect(() => {
     fetchChats({
@@ -60,8 +67,7 @@ export default function ChatScreen() {
       style={[
         styles.container,
         { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-      ]}
-    >
+      ]}>
       <StatusBar translucent backgroundColor={"transparent"} />
       <View style={[styles.navbar, { paddingTop: insets.top + 20 }]}>
         <View style={styles.navbarItem}>
@@ -69,12 +75,15 @@ export default function ChatScreen() {
             <Feather name="arrow-right-circle" size={25} color="#fff" />
           </Pressable>
           <Text
-            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}
-          >
+            style={{ color: "#fff", fontFamily: "CairoBold", fontSize: 18 }}>
             الرسائل
           </Text>
         </View>
-        <View style={styles.navbarItem}></View>
+        <View style={styles.navbarItem}>
+          <Pressable onPress={() => markAllAsSeen()}>
+            <FontAwesome5 name="check-double" size={20} color="#fff" />
+          </Pressable>
+        </View>
       </View>
       <View style={styles.buttonsContainer}>
         <Pressable
@@ -90,15 +99,13 @@ export default function ChatScreen() {
                   : "#f7f7f7",
             },
           ]}
-          onPress={() => setUnRead(false)}
-        >
+          onPress={() => setUnRead(false)}>
           <Text
             style={[
               styles.buttonText,
               !unRead ? styles.active : null,
               { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
-            ]}
-          >
+            ]}>
             الكل
           </Text>
         </Pressable>
@@ -115,15 +122,13 @@ export default function ChatScreen() {
                   : "#f7f7f7",
             },
           ]}
-          onPress={() => setUnRead(true)}
-        >
+          onPress={() => setUnRead(true)}>
           <Text
             style={[
               styles.buttonText,
               unRead ? styles.active : null,
               { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
-            ]}
-          >
+            ]}>
             غير مقروء
           </Text>
         </Pressable>
@@ -148,8 +153,7 @@ export default function ChatScreen() {
                     orderId: item.orderId,
                   },
                 });
-              }}
-            >
+              }}>
               <View style={styles.chat}>
                 <View style={styles.icon}>
                   <Feather name="box" size={24} color="#fff" />
@@ -159,8 +163,7 @@ export default function ChatScreen() {
                     style={{
                       fontFamily: "CairoBold",
                       color: theme === "dark" ? "#fff" : "#000",
-                    }}
-                  >
+                    }}>
                     {item.receiptNumber ? item.receiptNumber : item.orderId}
                   </Text>
                   <Text
@@ -168,8 +171,7 @@ export default function ChatScreen() {
                       fontFamily: "Cairo",
                       color: theme === "dark" ? "#ccc" : "grey",
                       fontSize: 12,
-                    }}
-                  >
+                    }}>
                     {item.lastMessage.image
                       ? "صوره"
                       : item.lastMessage.content.length > 30
@@ -188,8 +190,7 @@ export default function ChatScreen() {
                       borderRadius: 10,
                       alignItems: "center",
                       paddingTop: 3,
-                    }}
-                  >
+                    }}>
                     <Text style={{ color: "#fff", fontSize: 10 }}>
                       {item.unseenMessages}
                     </Text>
@@ -200,8 +201,7 @@ export default function ChatScreen() {
                     fontFamily: "Cairo",
                     color: theme === "dark" ? "#ccc" : "grey",
                     fontSize: 10,
-                  }}
-                >
+                  }}>
                   {formatTimeAgo(item.lastMessage.createdAt)}
                 </Text>
               </View>

@@ -11,7 +11,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -49,19 +48,21 @@ export default function BarcodeScreen() {
       });
     },
     onSuccess: () => {
-      scannedRef.current = false;
+      setTimeout(() => {
+        scannedRef.current = false;
+      }, 2000);
       Toast.show({
         type: "success",
         text1: "تم بنجاح ✅",
         text2: "تم الاستلام بنجاح 🎉",
         position: "top",
       });
-      setId(null);
       refreshStatistics();
     },
     onError: (error: AxiosError<APIError>) => {
-      scannedRef.current = false;
-      setId(null);
+      setTimeout(() => {
+        scannedRef.current = false;
+      }, 2000);
       Toast.show({
         type: "error",
         text1: "حدث خطأ ❌",
@@ -99,14 +100,16 @@ export default function BarcodeScreen() {
         }}
         facing={facing}
         onBarcodeScanned={(props) => {
-          if (scannedRef.current && !received) return;
+          if (scannedRef.current) return;
 
           try {
             const data = JSON.parse(props.data);
             scannedRef.current = true;
-
+            setTimeout(() => {
+              scannedRef.current = false;
+            }, 2000);
             if (received) {
-              setId(data.id);
+              sendOrders(data.id);
             } else if (forAdd) {
               router.push({
                 pathname: "/addOrder",
@@ -136,29 +139,6 @@ export default function BarcodeScreen() {
         <View style={styles.edgeBottomLeft} />
         <View style={styles.edgeBottomRight} />
       </View>
-      {received ? (
-        <View style={[styles.buttonContainer, { bottom: 120 }]}>
-          <Pressable
-            style={{
-              backgroundColor: "green",
-              padding: 10,
-              borderRadius: 5,
-              minWidth: 125,
-              alignItems: "center",
-              opacity: id ? 1 : 0.5,
-            }}
-            onPress={() => sendOrders(id || "")}
-          >
-            {isloadingSend ? (
-              <ActivityIndicator size={"small"} color={"#fff"} />
-            ) : (
-              <Text style={{ color: "#fff", fontFamily: "Cairo" }}>
-                استلام الطلب{id ? " - " + id : ""}
-              </Text>
-            )}
-          </Pressable>
-        </View>
-      ) : null}
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>

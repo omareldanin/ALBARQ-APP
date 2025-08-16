@@ -146,8 +146,7 @@ export default function Home() {
         style={[
           styles.container,
           { backgroundColor: theme === "dark" ? "#31404e" : "#fff" },
-        ]}
-      >
+        ]}>
         {showSearch ? (
           <View style={[styles.searchContainer, { top: insets.top }]}>
             <TextInput
@@ -172,8 +171,7 @@ export default function Home() {
               onPress={() => {
                 setShowSearch(false);
                 setSearchText("");
-              }}
-            >
+              }}>
               <AntDesign name="close" size={22} color="#a91101" />
             </Pressable>
           </View>
@@ -181,8 +179,7 @@ export default function Home() {
           <View style={[styles.navbar, { top: insets.top }]}>
             <Pressable
               style={styles.navbarItem}
-              onPress={() => router.navigate("/barcode")}
-            >
+              onPress={() => router.navigate("/barcode")}>
               <MaterialCommunityIcons
                 name="qrcode-scan"
                 size={24}
@@ -192,8 +189,7 @@ export default function Home() {
             <View style={styles.navbarItem}>
               <Pressable
                 style={styles.bell}
-                onPress={() => router.navigate("/notifications")}
-              >
+                onPress={() => router.navigate("/notifications")}>
                 {unSeenCount > 0 ? (
                   <Text style={styles.bellNumber}>
                     {unSeenCount > 99 ? "+99" : unSeenCount}
@@ -227,16 +223,14 @@ export default function Home() {
                         : "#f7f7f7",
                   },
                 ]}
-                onPress={() => setShowTodayNumber(true)}
-              >
+                onPress={() => setShowTodayNumber(true)}>
                 <Text
                   style={[
                     styles.buttonText,
                     showTodayNumber ? styles.active : null,
                     { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
                   ]}
-                  allowFontScaling={false}
-                >
+                  allowFontScaling={false}>
                   طلبات اليوم
                 </Text>
               </Pressable>
@@ -253,16 +247,14 @@ export default function Home() {
                         : "#f7f7f7",
                   },
                 ]}
-                onPress={() => setShowTodayNumber(false)}
-              >
+                onPress={() => setShowTodayNumber(false)}>
                 <Text
                   style={[
                     styles.buttonText,
                     !showTodayNumber ? styles.active : null,
                     { backgroundColor: theme === "dark" ? "#15202b" : "#fff" },
                   ]}
-                  allowFontScaling={false}
-                >
+                  allowFontScaling={false}>
                   المبلغ الصافي
                 </Text>
               </Pressable>
@@ -274,8 +266,7 @@ export default function Home() {
             style={[
               styles.controlsContainers,
               { backgroundColor: theme === "dark" ? "#a9110170" : "#a9110121" },
-            ]}
-          >
+            ]}>
             {role !== "RECEIVING_AGENT" &&
             role !== "INQUIRY_EMPLOYEE" &&
             role !== "CLIENT_ASSISTANT" ? (
@@ -287,8 +278,7 @@ export default function Home() {
                       styles.numberText,
                       { color: theme === "dark" ? "#fff" : "#000" },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     {showTodayNumber
                       ? formatNumber(
                           statistics?.todayOrdersStatistics.count + ""
@@ -311,8 +301,7 @@ export default function Home() {
                       styles.numberText,
                       { color: theme === "dark" ? "#fff" : "#000" },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     {showTodayNumber
                       ? formatNumber(
                           statistics?.todayOrdersStatistics.totalCost + ""
@@ -330,8 +319,7 @@ export default function Home() {
               <View style={[styles.controls]}>
                 <Pressable
                   style={[styles.buttonContainer, { marginVertical: 5 }]}
-                  onPress={() => setShowReceivingOption(true)}
-                >
+                  onPress={() => setShowReceivingOption(true)}>
                   <View style={styles.icon}>
                     <MaterialCommunityIcons
                       name="qrcode-scan"
@@ -343,13 +331,13 @@ export default function Home() {
                     style={[
                       styles.btnText,
                       {
-                        width: 100,
-                        fontSize: 15,
+                        width: "auto",
+                        fontSize: 14,
+                        lineHeight: 20,
                         color: theme === "dark" ? "#fff" : "#000",
                       },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     إستلام شحنات
                   </Text>
                 </Pressable>
@@ -361,8 +349,7 @@ export default function Home() {
                   permissions?.includes("ADD_ORDER")) ? (
                   <Pressable
                     style={styles.buttonContainer}
-                    onPress={() => setShowAddOption(true)}
-                  >
+                    onPress={() => setShowAddOption(true)}>
                     <View style={styles.icon}>
                       <Image
                         source={require("../../assets/images/add.png")}
@@ -378,8 +365,7 @@ export default function Home() {
                         styles.btnText,
                         { color: theme === "dark" ? "#fff" : "#000" },
                       ]}
-                      allowFontScaling={false}
-                    >
+                      allowFontScaling={false}>
                       إضافه شحنه
                     </Text>
                   </Pressable>
@@ -397,8 +383,7 @@ export default function Home() {
                           printed: "false",
                         },
                       })
-                    }
-                  >
+                    }>
                     <View style={styles.icon}>
                       <Image
                         source={require("../../assets/images/printer.png")}
@@ -414,8 +399,7 @@ export default function Home() {
                         styles.btnText,
                         { color: theme === "dark" ? "#fff" : "#000" },
                       ]}
-                      allowFontScaling={false}
-                    >
+                      allowFontScaling={false}>
                       طباعه
                     </Text>
                   </Pressable>
@@ -433,8 +417,7 @@ export default function Home() {
                           printed: "true",
                         },
                       })
-                    }
-                  >
+                    }>
                     <View style={styles.icon}>
                       <Image
                         source={require("../../assets/images/delivery-truck.png")}
@@ -450,8 +433,7 @@ export default function Home() {
                         styles.btnText,
                         { color: theme === "dark" ? "#fff" : "#000" },
                       ]}
-                      allowFontScaling={false}
-                    >
+                      allowFontScaling={false}>
                       إرسال للشحن
                     </Text>
                   </Pressable>
@@ -470,20 +452,19 @@ export default function Home() {
                         color: theme === "dark" ? "#fff" : "#000",
                       },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     صافي المندوب
                   </Text>
                   <Text
                     style={[
                       styles.btnText,
                       {
+                        width: "auto",
                         fontSize: 12,
                         fontFamily: "CairoBold",
                         color: theme === "dark" ? "#fff" : "#000",
                       },
-                    ]}
-                  >
+                    ]}>
                     {formatNumber(
                       statistics?.allOrdersStatisticsWithoutDeliveryReport
                         .deliveryCost + ""
@@ -500,21 +481,20 @@ export default function Home() {
                         color: theme === "dark" ? "#fff" : "#000",
                       },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     صافي الفرع
                   </Text>
                   <Text
                     style={[
                       styles.btnText,
                       {
+                        width: "auto",
                         fontSize: 12,
                         fontFamily: "CairoBold",
                         color: theme === "dark" ? "#fff" : "#000",
                       },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     {(
                       (statistics?.allOrdersStatisticsWithoutDeliveryReport
                         ?.totalCost ?? 0) -
@@ -562,8 +542,7 @@ export default function Home() {
                     },
                   });
                 }
-              }}
-            >
+              }}>
               <Image
                 source={{ uri: `${status.icon}?v=1` }}
                 resizeMode="contain"
@@ -573,8 +552,7 @@ export default function Home() {
                 style={[
                   styles.statusCount,
                   { color: theme === "dark" ? "#fff" : "#000" },
-                ]}
-              >
+                ]}>
                 {formatNumber(status.count + "")}
               </Text>
               <View style={styles.statusName}>
@@ -582,8 +560,7 @@ export default function Home() {
                   style={[
                     styles.statusNameText,
                     { color: theme === "dark" ? "#fff" : "#000" },
-                  ]}
-                >
+                  ]}>
                   {status.name}
                 </Text>
               </View>
@@ -596,12 +573,13 @@ export default function Home() {
         isVisible={showAddOptions}
         close={() => setShowAddOption(false)}
       />
-
-      <ReceiveOptions
-        isVisible={showReceivingOptions}
-        close={() => setShowReceivingOption(false)}
-        openAdd={() => setShowAddReceiptNumber(true)}
-      />
+      {showReceivingOptions && (
+        <ReceiveOptions
+          isVisible={showReceivingOptions}
+          close={() => setShowReceivingOption(false)}
+          openAdd={() => setShowAddReceiptNumber(true)}
+        />
+      )}
 
       <ConfirmOrder
         visible={showAddReceiptNumber}
@@ -615,8 +593,7 @@ export default function Home() {
       (role === "CLIENT_ASSISTANT" && permissions?.includes("MESSAGES")) ? (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={() => router.navigate("/chats")}
-        >
+          onPress={() => router.navigate("/chats")}>
           {totalUnSeened > 0 ? (
             <Text style={styles.totalUnseen}>
               {totalUnSeened > 99 ? "+99" : totalUnSeened}

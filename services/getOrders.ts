@@ -190,8 +190,8 @@ export interface OrdersFilter extends Filters {
   forwarded_from_id?: string;
   search?: string;
   sort?: string;
-  start_date?: Date | string | null;
-  end_date?: Date | string | null;
+  start_date?: Date | null;
+  end_date?: Date | null;
   delivery_date?: Date | string | null;
   governorate?: string;
   status?: string | string[];
@@ -302,6 +302,7 @@ export const getOrdersService = async (
       forwarded: forwarded || undefined,
       forwarded_by_id: forwarded_by_id || undefined,
       forwarded_from_id: forwarded_from_id || undefined,
+      minified: true,
       receipt_numbers: receipt_numbers?.length
         ? receipt_numbers.join(",")
         : undefined,

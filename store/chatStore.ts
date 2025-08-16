@@ -1,4 +1,9 @@
-import { Chat, Filters, getChatService } from "@/services/chat";
+import {
+  Chat,
+  Filters,
+  getChatService,
+  updateMessagesSeenService,
+} from "@/services/chat";
 import { create } from "zustand";
 
 interface ChatStore {
@@ -11,6 +16,7 @@ interface ChatStore {
   fetchChats: (filters: Filters) => Promise<void>;
   refreshChats: (filters: Filters) => Promise<void>;
   markChatSeen: (chatId: number) => void;
+  markAllAsSeen: () => void;
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -41,7 +47,18 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   refreshChats: async (filters: Filters) => {
     await get().fetchChats({ ...filters, page: 1 });
   },
-
+  markAllAsSeen: async () => {
+    try {
+      await updateMessagesSeenService();
+      // Update store state without refetch
+      set((state) => ({
+        chats: state.chats.map((n) => ({ ...n, unseenMessages: 0 })),
+        totalUnSeened: 0,
+      }));
+    } catch (e) {
+      console.error("❌ Error updating notifications", e);
+    }
+  },
   markChatSeen: (chatId: number) => {
     set((state) => {
       const updatedChats = state.chats.map((chat) => {

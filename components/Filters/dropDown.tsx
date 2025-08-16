@@ -92,18 +92,22 @@ export default function NativeSearchableSelect({
       <Pressable style={styles.selectBox} onPress={() => setModalVisible(true)}>
         <Text style={styles.selectText}>{value || label}</Text>
       </Pressable>
-      <Pressable
-        style={{
-          position: "absolute",
-          [!I18nManager.isRTL ? "left" : "right"]: 0,
-          top: 12,
-          zIndex: 1000,
-          width: 40,
-        }}
-        onPress={reset}
-      >
-        <Feather name="x" size={24} color="grey" />
-      </Pressable>
+      {selectedValue && (
+        <Pressable
+          style={{
+            position: "absolute",
+            [!I18nManager.isRTL ? "left" : "right"]: 10,
+            top: 12,
+            zIndex: 1000,
+            width: 40,
+          }}
+          onPress={() => {
+            reset();
+            setSelectedValue(null);
+          }}>
+          <Feather name="x" size={24} color="grey" />
+        </Pressable>
+      )}
 
       <Modal animationType="slide" visible={modalVisible} transparent>
         <View style={styles.modalOverlay}>
@@ -120,8 +124,7 @@ export default function NativeSearchableSelect({
               renderItem={({ item }) => (
                 <Pressable
                   style={styles.optionItem}
-                  onPress={() => handleSelect(item.value)}
-                >
+                  onPress={() => handleSelect(item.value)}>
                   <Text>{item.label}</Text>
                 </Pressable>
               )}
@@ -129,8 +132,7 @@ export default function NativeSearchableSelect({
             />
             <Pressable
               onPress={() => setModalVisible(false)}
-              style={styles.closeBtn}
-            >
+              style={styles.closeBtn}>
               <Text style={styles.closeText}>الغاء</Text>
             </Pressable>
           </View>
@@ -151,6 +153,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   selectText: {
+    textAlign: "left",
     color: "grey",
   },
   modalOverlay: {

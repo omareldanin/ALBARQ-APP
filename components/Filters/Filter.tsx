@@ -12,6 +12,7 @@ import styles from "@/styles/filter";
 import { Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
+import DateInput from "./DateInput";
 import NativeSearchableSelect from "./dropDown";
 
 interface Props {
@@ -58,8 +59,7 @@ export const Filters = ({
         backdropOpacity={0.4}
         backdropTransitionOutTiming={0} // prevent flicker on close
         animationIn="slideInUp"
-        animationOut="slideOutDown"
-      >
+        animationOut="slideOutDown">
         <View style={styles.modalContent}>
           <View>
             <Text
@@ -67,18 +67,47 @@ export const Filters = ({
                 fontFamily: "CairoBold",
                 color: "#a91101",
                 marginBottom: 10,
-              }}
-            >
+                textAlign: "center",
+              }}>
               تصفيه
             </Text>
 
-            {/* <DateInput
-              title={orderFilters.start_date?.toLocaleString() || "من تاريخ"}
-              onChange={(e, date) => {
+            <DateInput
+              title={
+                orderFilters.start_date?.toLocaleDateString("en-GB") ||
+                "من تاريخ"
+              }
+              onChange={(date) => {
                 setOrdersData([]);
-                setFilters((pre) => ({ ...pre, start_date: date }));
+                setFilters((pre) => ({ ...pre, start_date: date, page: 1 }));
               }}
-            /> */}
+              reset={() => {
+                setOrdersData([]);
+                setFilters((pre) => ({
+                  ...pre,
+                  start_date: undefined,
+                  page: 1,
+                }));
+              }}
+            />
+            <DateInput
+              title={
+                orderFilters.end_date?.toLocaleDateString("en-GB") ||
+                "الي تاريخ"
+              }
+              onChange={(date) => {
+                setOrdersData([]);
+                setFilters((pre) => ({ ...pre, end_date: date, page: 1 }));
+              }}
+              reset={() => {
+                setOrdersData([]);
+                setFilters((pre) => ({
+                  ...pre,
+                  end_date: undefined,
+                  page: 1,
+                }));
+              }}
+            />
             <TextInput
               placeholder="رقم الهاتف , رقم الوصل , الاسم"
               style={[styles.input]}

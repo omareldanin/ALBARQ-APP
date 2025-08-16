@@ -85,24 +85,21 @@ export const ReportItem = ({ report }: Props) => {
           backgroundColor: theme === "dark" ? "#15202b" : "#fff",
           borderColor: theme === "dark" ? "#15202b" : "#f7f7f7",
         },
-      ]}
-    >
+      ]}>
       <Pressable style={styles.head} onPress={toggleExpand}>
         <View
-          style={{ flexDirection: "row", alignItems: "flex-start", gap: 15 }}
-        >
+          style={{ flexDirection: "row", alignItems: "flex-start", gap: 15 }}>
           <FontAwesome6
             name="clipboard-list"
             size={22}
             color={report.secondaryType === "DELIVERED" ? "green" : "#a91101"}
           />
-          <View>
+          <View style={{ alignItems: "flex-start" }}>
             <Text
               style={{
                 fontFamily: "CairoBold",
                 color: theme === "dark" ? "#fff" : "#000",
-              }}
-            >
+              }}>
               {report.id}
             </Text>
             <Text
@@ -112,8 +109,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 color:
                   report.secondaryType === "DELIVERED" ? "green" : "#a91101",
-              }}
-            >
+              }}>
               {report.secondaryType === "DELIVERED" ? "واصل" : "راجع"}
             </Text>
             <Text
@@ -122,8 +118,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontFamily: "Cairo",
                 color: "grey",
                 fontSize: 11,
-              }}
-            >
+              }}>
               {confirmed ? "تم الاستلام" : "لم يتم الاستلام"}
             </Text>
           </View>
@@ -136,8 +131,7 @@ export const ReportItem = ({ report }: Props) => {
               alignItems: "flex-start",
               justifyContent: "center",
             }}
-            onPress={() => savePdf()}
-          >
+            onPress={() => savePdf()}>
             {isloadingPrint ? (
               <ActivityIndicator size="small" color={"#a91101"} />
             ) : (
@@ -155,8 +149,7 @@ export const ReportItem = ({ report }: Props) => {
               alignItems: "flex-end",
               justifyContent: "center",
             }}
-            onPress={toggleExpand}
-          >
+            onPress={toggleExpand}>
             {expanded ? (
               <FontAwesome5 name="angle-up" size={22} color="#A91101" />
             ) : (
@@ -174,8 +167,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               التاريخ :
             </Text>
           </View>
@@ -186,8 +178,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 13,
                 marginRight: 10,
                 color: theme === "dark" ? "#fff" : "#000",
-              }}
-            >
+              }}>
               {date.toLocaleString()}
             </Text>
           </View>
@@ -201,8 +192,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontSize: 14,
                   marginRight: 10,
                   color: theme === "dark" ? "#ccc" : "#000",
-                }}
-              >
+                }}>
                 العميل :
               </Text>
             </View>
@@ -213,8 +203,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontSize: 13,
                   marginRight: 10,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                }}>
                 {report.clientReport?.client.name}
               </Text>
             </View>
@@ -229,8 +218,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontSize: 14,
                   marginRight: 10,
                   color: theme === "dark" ? "#ccc" : "#000",
-                }}
-              >
+                }}>
                 العميل :
               </Text>
             </View>
@@ -241,8 +229,7 @@ export const ReportItem = ({ report }: Props) => {
                   fontSize: 13,
                   marginRight: 10,
                   color: theme === "dark" ? "#fff" : "#000",
-                }}
-              >
+                }}>
                 {report.deliveryAgentReport?.deliveryAgent.name}
               </Text>
             </View>
@@ -256,8 +243,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               عدد الطلبات :
             </Text>
           </View>
@@ -268,8 +254,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 13,
                 marginRight: 10,
                 color: theme === "dark" ? "#fff" : "#000",
-              }}
-            >
+              }}>
               {report.baghdadOrdersCount + report.governoratesOrdersCount}
             </Text>
           </View>
@@ -282,8 +267,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               عدد طلبات بغداد :
             </Text>
           </View>
@@ -294,8 +278,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 13,
                 marginRight: 10,
                 color: theme === "dark" ? "#fff" : "#000",
-              }}
-            >
+              }}>
               {report.baghdadOrdersCount}
             </Text>
           </View>
@@ -308,8 +291,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               عدد طلبات المحافظات :
             </Text>
           </View>
@@ -320,8 +302,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 13,
                 marginRight: 10,
                 color: theme === "dark" ? "#fff" : "#000",
-              }}
-            >
+              }}>
               {report.governoratesOrdersCount}
             </Text>
           </View>
@@ -334,8 +315,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               حاله الكشف :
             </Text>
           </View>
@@ -346,8 +326,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 13,
                 marginRight: 10,
                 color: report.status === "PAID" ? "green" : "red",
-              }}
-            >
+              }}>
               {report.status === "PAID" ? "مدفوع" : "غير مدفوع"}
             </Text>
           </View>
@@ -360,8 +339,7 @@ export const ReportItem = ({ report }: Props) => {
                 fontSize: 14,
                 marginRight: 10,
                 color: theme === "dark" ? "#ccc" : "#000",
-              }}
-            >
+              }}>
               استلام الكشف :
             </Text>
           </View>
@@ -378,8 +356,7 @@ export const ReportItem = ({ report }: Props) => {
                 opacity: confirmed ? 0.7 : 1,
               }}
               onPress={() => setIsDialogVisible(true)}
-              disabled={confirmed || isConfirmLoading}
-            >
+              disabled={confirmed || isConfirmLoading}>
               {isConfirmLoading ? (
                 <ActivityIndicator size="small" color={"#a91101"} />
               ) : (
@@ -390,8 +367,7 @@ export const ReportItem = ({ report }: Props) => {
                     marginRight: 10,
                     color: "#fff",
                     textAlign: "center",
-                  }}
-                >
+                  }}>
                   {confirmed ? "مستلم" : "استلام"}
                 </Text>
               )}
